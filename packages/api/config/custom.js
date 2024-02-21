@@ -5,7 +5,8 @@ const customConfig = {
         secretKey: '',
         bucket: '',
         region: ''
-    }
+    },
+    navDefaultId: 1
 };
 
 export { customConfig };
