@@ -69,6 +69,9 @@ importers:
 
   packages/api:
     dependencies:
+      '@yicode/sync-user-database':
+        specifier: ^1.1.2
+        version: 1.1.2
       '@yicode/yiapi':
         specifier: 3.17.2
         version: 3.17.2
@@ -2030,6 +2033,26 @@ packages:
 
   /@vue/shared@3.4.19:
     resolution: {integrity: sha512-/KliRRHMF6LoiThEy+4c1Z4KB/gbPrGjWwJR+crg2otgrf/egKzRaCPvJ51S5oetgsgXLfc4Rm5ZgrKHZrtMSw==}
+
+  /@yicode/sync-user-database@1.1.2:
+    resolution: {integrity: sha512-LB6MRO7CLNbI3f9jOdQiQWBzLy4MZAP6G1lBCmgd3GIFdFXL+FMgxCMxmLY9WIcYDOw610gY4DhoeCIo0RGHVQ==}
+    requiresBuild: true
+    dependencies:
+      colorette: 2.0.20
+      fast-glob: 3.3.2
+      knex: 3.1.0(mysql2@3.9.1)
+      lodash-es: 4.17.21
+      log-symbols: 6.0.0
+    transitivePeerDependencies:
+      - better-sqlite3
+      - mysql
+      - mysql2
+      - pg
+      - pg-native
+      - sqlite3
+      - supports-color
+      - tedious
+    dev: false
 
   /@yicode/yiapi@3.17.2:
     resolution: {integrity: sha512-MTCTMR/E27PyL8NFw3lGpzfqasTLq7yzwDVMIEYuKZEE7WTRLgkWt1D/2lPjEm2vUPI8Xfhcu8SN8CFTcBjj6w==}

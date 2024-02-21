@@ -15,6 +15,8 @@
         "build": "pm2 start pm2.config.cjs",
         "syncCoreDb:dev": "node --env-file=env/.development.env ./scripts/syncCoreDatabase.js",
         "syncCoreDb:build": "node --env-file=env/.production.env ./scripts/syncCoreDatabase.js",
+        "syncUserDb:dev": "node --env-file=env/.development.env ./scripts/syncUserDatabase.js",
+        "syncUserDb:build": "node --env-file=env/.production.env ./scripts/syncUserDatabase.js",
         "flamegraph": "pnpm dlx rimraf .cache/0x & pnpm dlx 0x --output-dir=.cache/0x --output-html={outputDir}/index.html -- node --env-file=env/.development.env yiapi.js"
     },
     "keywords": [
@@ -29,6 +31,7 @@
         "url": "https://github.com/yicode-team/yicode.git"
     },
     "dependencies": {
+        "@yicode/sync-user-database": "^1.1.2",
         "@yicode/yiapi": "3.17.2",
         "lodash-es": "^4.17.21"
     },
