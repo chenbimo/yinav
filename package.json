@@ -1,0 +1,41 @@
+{
+    "name": "root",
+    "version": "0.0.0",
+    "private": true,
+    "type": "module",
+    "publishConfig": {
+        "access": "restricted"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/chenbimo/yicode.git"
+    },
+    "description": "随易科技（yicode.tech） - 软件开发生态",
+    "homepage": "https://yicode.tech",
+    "main": "index.js",
+    "scripts": {
+        "preinstall": "npx only-allow pnpm"
+    },
+    "keywords": [
+        "yicode",
+        "cli",
+        "webpack",
+        "vite",
+        "vue",
+        "vue2",
+        "vue3",
+        "nodejs"
+    ],
+    "author": "chensuiyi <bimostyle@qq.com>",
+    "devDependencies": {
+        "lint-staged": "^15.2.2",
+        "prettier": "^3.2.5",
+        "simple-git-hooks": "^2.9.0"
+    },
+    "simple-git-hooks": {
+        "pre-commit": "pnpm lint-staged"
+    },
+    "lint-staged": {
+        "*.{js,css,scss,less,ts,jsx,vue,html,json,md,yaml}": "prettier --write"
+    }
+}

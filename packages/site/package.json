@@ -1,0 +1,26 @@
+{
+    "name": "site",
+    "private": false,
+    "version": "1.0.1",
+    "type": "module",
+    "scripts": {
+        "preinstall": "npx only-allow pnpm",
+        "dev": "yite --command=dev --env-file=development",
+        "build": "yite --command=build --env-file=production"
+    },
+    "dependencies": {
+        "@arco-design/web-vue": "^2.54.4",
+        "@yicode/yidash": "^3.6.10",
+        "axios": "^1.6.7",
+        "blueimp-md5": "^2.19.0",
+        "date-fns": "^3.3.1",
+        "lodash-es": "^4.17.21",
+        "pinia": "^2.1.7",
+        "store2": "^2.14.3",
+        "tiny-cookie": "^2.5.1",
+        "vue": "^3.4.19",
+        "vue-i18n": "^9.9.1",
+        "vue-meta": "^2.4.0",
+        "vue-router": "^4.2.5"
+    }
+}

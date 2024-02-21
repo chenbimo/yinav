@@ -1,0 +1,58 @@
+{
+    "name": "导航表",
+    "fields": {
+        "user_id": {
+            "type": "bigInteger",
+            "comment": "所属用户",
+            "default": 0,
+            "index": true
+        },
+        "pid": {
+            "type": "bigInteger",
+            "comment": "父级 ID",
+            "default": 0,
+            "index": true
+        },
+        "pids": {
+            "type": "string",
+            "comment": "父级 ID 链",
+            "length": 10000,
+            "default": "0"
+        },
+        "name": {
+            "type": "string",
+            "comment": "导航名称",
+            "length": 20,
+            "default": ""
+        },
+        "link": {
+            "type": "string",
+            "comment": "导航链接",
+            "length": 200,
+            "default": ""
+        },
+        "sort": {
+            "type": "bigInteger",
+            "comment": "导航排序",
+            "default": 1
+        },
+        "describe": {
+            "type": "string",
+            "comment": "导航描述",
+            "length": 500,
+            "default": ""
+        },
+        "thumbnail": {
+            "type": "string",
+            "comment": "导航缩略图",
+            "length": 300,
+            "default": ""
+        },
+        "is_home": {
+            "type": "tinyint",
+            "comment": "是否主页显示",
+            "length": 1,
+            "default": 0
+        }
+    }
+}
