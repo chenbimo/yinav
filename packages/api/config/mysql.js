@@ -3,7 +3,7 @@ export const mysqlConfig = {
     development: {
         host: '127.0.0.1',
         port: 3306,
-        db: 'test',
+        db: 'yinav',
         username: 'root',
         password: 'root'
     },
@@ -11,7 +11,7 @@ export const mysqlConfig = {
     production: {
         host: '127.0.0.1',
         port: 3306,
-        db: 'test',
+        db: 'yinav',
         username: 'root',
         password: 'root'
     }

@@ -10,16 +10,16 @@ import { weixinConfig } from './config/weixin.js';
 // 默认配置
 const appConfig = {
     // 应用名称
-    appName: '易接口',
-    appNameEn: 'yiapi',
+    appName: '易导航',
+    appNameEn: 'yinav',
     // 加密盐，请重新设置为一个随机值
-    salt: 'yiapi-123456.',
+    salt: 'yinav-bdecbc98-db43-c0fb-5c49-4d87fade630b',
     // 监听端口
     port: 3000,
     // 监听主机
     host: '127.0.0.1',
     // 超级管理员密码
-    devPassword: 'dev123456',
+    devPassword: 'dev666666',
     // 是否验证参数
     paramsCheck: false,
     // 日志字段过滤，不打印
@@ -69,7 +69,7 @@ const appConfig = {
     // jwt 配置
     jwt: {
         // jwt 密钥，第一次使用，请修改此密钥值！！！
-        secret: 'yiapi',
+        secret: 'yinav-6a1d1d82-33df-5599-8300-f12e17962107',
         expiresIn: '7d'
     },
     // 邮件配置
