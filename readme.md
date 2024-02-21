@@ -1,6 +1,6 @@
 # yinav - 易导航
 
-随易科技（https://yicode.tech）旗下开源免费的站点导航项目。
+随易科技 https://yicode.tech 旗下开源免费的站点导航项目。
 
 ## 仓库地址
 
