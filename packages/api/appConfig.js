@@ -39,7 +39,15 @@ const appConfig = {
         '/api/tool/tokenCheck',
         '/api/upload/local',
         '/api/tool/sendMail',
-        '/api/news/insert'
+        '/api/news/insert',
+        '/api/navigation/select',
+        '/api/navigation/list',
+        '/api/navigation/count',
+        '/api/navigation/selectAll',
+        '/api/category/select',
+        '/api/category/selectAll',
+        '/api/category/count',
+        '/api/category/list'
     ],
     // 黑名单接口，不可访问的接口
     blackApis: [],

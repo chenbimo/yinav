@@ -1,80 +1,78 @@
-import * as yiapi from '@yicode/yiapi';
+import { fnRoute, fnField } from '@yicode/yiapi/fn.js';
+import { httpConfig } from '@yicode/yiapi/config/httpConfig.js';
 import { metaConfig } from './_meta.js';
 
-let apiInfo = await yiapi.utils.fnApiInfo(import.meta.url);
+export const apiName = '更新导航';
 
-export let apiSchema = {
-    summary: `更新${metaConfig.name}`,
-    tags: [apiInfo.parentDirName],
-    body: {
-        title: `更新${metaConfig.name}接口`,
-        type: 'object',
-        properties: {
-            id: yiapi.utils.fnSchema(yiapi.schemaField.id, '自增ID'),
-            pid: yiapi.utils.fnSchema(yiapi.schemaField.pid, '分类ID'),
-            name: yiapi.utils.fnSchema(null, '导航名称', 'string', 1, 30),
-            link: yiapi.utils.fnSchema(null, '导航链接', 'string', 0, 300),
-            sort: yiapi.utils.fnSchema(yiapi.schemaField.min1, '导航排序'),
-            describe: yiapi.utils.fnSchema(yiapi.schemaField.describe, '导航描述')
+export default async (fastify) => {
+    // 当前文件的路径，fastify 实例
+    fnRoute(import.meta.url, fastify, {
+        // 接口名称
+        apiName: apiName,
+        // 请求参数约束
+        schemaRequest: {
+            type: 'object',
+            properties: {
+                id: metaConfig.id,
+                pid: metaConfig.pid,
+                name: metaConfig.name,
+                link: metaConfig.link,
+                sort: metaConfig.sort,
+                describe: metaConfig.describe
+            },
+            required: ['pid', 'name', 'link']
         },
-        required: ['id']
-    }
-};
-
-export default async function (fastify, opts) {
-    fastify.post(`/${apiInfo.pureFileName}`, {
-        schema: apiSchema,
-        handler: async function (req, res) {
+        // 返回数据约束
+        schemaResponse: {},
+        // 执行函数
+        apiHandler: async (req, res) => {
             try {
-                let navigationModel = fastify.mysql.table('nav_navigation').where({ user_id: req.session.id });
-                let categoryModel = fastify.mysql.table('nav_category').where({ user_id: req.session.id });
+                const navigationModel = fastify.mysql.table('navigation');
+                const categoryModel = fastify.mysql.table('category');
 
-                let parentData = undefined;
+                let parentData = {};
 
                 // 如果需要更换父级
                 if (req.body.pid) {
-                    parentData = await categoryModel.clone().where('id', req.body.pid).first();
-                    if (!parentData) {
+                    parentData = await categoryModel.clone().where('id', req.body.pid).selectOne();
+                    if (!parentData.id) {
                         return {
-                            ...yiapi.codeConfig.FAIL,
+                            ...httpConfig.FAIL,
                             msg: '分类不存在'
                         };
                     }
                 }
 
-                // 需要更新的数据
-                let updateData = {
-                    pid: req.body.pid,
-                    name: req.body.name,
-                    link: req.body.link,
-                    sort: req.body.sort,
-                    describe: req.body.describe
-                };
-
-                let updateResult = await navigationModel
+                const result = await navigationModel
                     //
                     .clone()
                     .where({ id: req.body.id })
-                    .update(yiapi.utils.fnDbUpdateData(updateData));
+                    .updateData({
+                        pid: req.body.pid,
+                        name: req.body.name,
+                        link: req.body.link,
+                        sort: req.body.sort,
+                        describe: req.body.describe
+                    });
 
-                let rows = await navigationModel.clone().select(
-                    //
-                    'nav_navigation.id',
-                    'nav_navigation.pid',
-                    'nav_navigation.pids',
-                    'nav_navigation.sort',
-                    'nav_navigation.user_id'
-                );
+                // let rows = await navigationModel.clone().select(
+                //     //
+                //     'navigation.id',
+                //     'navigation.pid',
+                //     'navigation.pids',
+                //     'navigation.sort',
+                //     'navigation.user_id'
+                // );
 
-                // await fastify.redisSet(`cacheData:navigationAll_${req.session.id}`, rows, yiapi.appConfig.redis.ex);
+                // await fastify.redisSet(`cacheData:navigationAll_${req.session.id}`, rows);
                 return {
-                    ...yiapi.codeConfig.UPDATE_SUCCESS,
-                    data: updateResult
+                    ...httpConfig.UPDATE_SUCCESS,
+                    data: result
                 };
             } catch (err) {
                 fastify.log.error(err);
-                return yiapi.codeConfig.UPDATE_FAIL;
+                return httpConfig.INSERT_FAIL;
             }
         }
     });
-}
+};

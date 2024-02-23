@@ -1,65 +1,66 @@
-import * as yiapi from '@yicode/yiapi';
+import { fnRoute, fnField } from '@yicode/yiapi/fn.js';
+import { httpConfig } from '@yicode/yiapi/config/httpConfig.js';
 import { metaConfig } from './_meta.js';
 
-let apiInfo = await yiapi.utils.fnApiInfo(import.meta.url);
+export const apiName = '删除导航分类';
 
-export let apiSchema = {
-    tags: [apiInfo.parentDirName],
-    summary: `删除${metaConfig.name}`,
-    body: {
-        title: `删除${metaConfig.name}接口`,
-        type: 'object',
-        properties: {
-            id: yiapi.utils.fnSchema(yiapi.schemaField.id, '唯一ID')
+export default async (fastify) => {
+    // 当前文件的路径，fastify 实例
+    fnRoute(import.meta.url, fastify, {
+        // 接口名称
+        apiName: apiName,
+        // 请求参数约束
+        schemaRequest: {
+            type: 'object',
+            properties: {
+                id: metaConfig.id
+            },
+            required: ['id']
         },
-        required: ['id']
-    }
-};
-
-export default async function (fastify, opts) {
-    fastify.post(`/${apiInfo.pureFileName}`, {
-        schema: apiSchema,
-        handler: async function (req, res) {
+        // 返回数据约束
+        schemaResponse: {},
+        // 执行函数
+        apiHandler: async (req, res) => {
             try {
                 if (req.body.id <= 0) {
                     return {
-                        ...yiapi.codeConfig.DELETE_FAIL,
-                        msg: '根导航不能删除'
+                        ...httpConfig.DELETE_FAIL,
+                        msg: '根导航分类不能删除'
                     };
                 }
-                let categoryModel = fastify.mysql.table('nav_category').where({ user_id: req.session.id });
+                const categoryModel = fastify.mysql.table('category');
 
                 // 判断是否有下级分类
-                let childCategoryData = await categoryModel.clone().where({ pid: req.body.id }).first();
+                const childCategoryData = await categoryModel.clone().where({ pid: req.body.id }).first();
                 if (childCategoryData) {
                     return {
-                        ...yiapi.codeConfig.FAIL,
+                        ...httpConfig.FAIL,
                         msg: '该分类存在下级分类，请将下级分类转移后操作'
                     };
                 }
 
-                let deleteResult = await categoryModel.clone().where({ id: req.body.id }).delete();
+                const result = await categoryModel.clone().where({ id: req.body.id }).delete();
 
-                let rows = await categoryModel.clone().select(
+                const rows = await categoryModel.clone().select(
                     //
-                    'nav_category.name',
-                    'nav_category.id',
-                    'nav_category.pid',
-                    'nav_category.pids',
-                    'nav_category.sort',
-                    'nav_category.user_id'
+                    'category.name',
+                    'category.id',
+                    'category.pid',
+                    'category.pids',
+                    'category.sort',
+                    'category.user_id'
                 );
 
-                await fastify.redisSet(`cacheData:navCategoryAll_${req.session.id}`, rows, yiapi.appConfig.redis.ex);
+                await fastify.redisSet(`cacheData:navCategoryAll_${req.session.id}`, rows);
 
                 return {
-                    ...yiapi.codeConfig.DELETE_SUCCESS,
-                    data: deleteResult
+                    ...httpConfig.DELETE_SUCCESS,
+                    data: result
                 };
             } catch (err) {
                 fastify.log.error(err);
-                return yiapi.codeConfig.DELETE_FAIL;
+                return httpConfig.SELECT_FAIL;
             }
         }
     });
-}
+};

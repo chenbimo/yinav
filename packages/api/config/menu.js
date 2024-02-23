@@ -11,6 +11,26 @@ const menuConfig = {
     //         }
     //     }
     // }
+    '/category': {
+        name: '导航分类',
+        sort: 2,
+        children: {
+            '/category/list': {
+                name: '分类列表',
+                sort: 1
+            }
+        }
+    },
+    '/navigation': {
+        name: '导航管理',
+        sort: 3,
+        children: {
+            '/navigation/list': {
+                name: '导航列表',
+                sort: 2
+            }
+        }
+    }
 };
 
 export { menuConfig };

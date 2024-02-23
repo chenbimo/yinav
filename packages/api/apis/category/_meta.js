@@ -10,5 +10,6 @@ export const metaConfig = fnMeta(import.meta.url, {
     describe: fnSchema(null, '分类描述', 'string', 0, 200, ''),
     type: fnSchema(null, '数据类型', 'string', null, null, ['mine', 'default']),
     mode: fnSchema(null, '数据模式', 'string', null, null, ['k', 's']),
-    level: fnSchema(null, '数据等级', 'string', null, null, ['mini', 'medium', 'large'])
+    level: fnSchema(null, '数据等级', 'string', null, null, ['mini', 'medium', 'large']),
+    keyword: fnSchema(null, '关键字', 'string', 0, 20, '')
 });

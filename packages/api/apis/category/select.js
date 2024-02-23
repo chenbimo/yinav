@@ -1,48 +1,50 @@
-import * as yiapi from '@yicode/yiapi';
+import { fnRoute, fnField } from '@yicode/yiapi/fn.js';
+import { httpConfig } from '@yicode/yiapi/config/httpConfig.js';
 import { metaConfig } from './_meta.js';
 
-let apiInfo = await yiapi.utils.fnApiInfo(import.meta.url);
+export const apiName = '查询分类';
 
-export let apiSchema = {
-    summary: `查询${metaConfig.name}`,
-    tags: [apiInfo.parentDirName],
-    body: {
-        title: `查询${metaConfig.name}接口`,
-        type: 'object',
-        properties: {
-            page: yiapi.utils.fnSchema(yiapi.schemaField.page, '第几页'),
-            limit: yiapi.utils.fnSchema(yiapi.schemaField.limit, '每页数量'),
-            pid: yiapi.utils.fnSchema(yiapi.schemaField.pid, '分类ID')
-        }
-    }
-};
-
-export default async function (fastify, opts) {
-    fastify.post(`/${apiInfo.pureFileName}`, {
-        schema: apiSchema,
-        handler: async function (req, res) {
+export default async (fastify) => {
+    // 当前文件的路径，fastify 实例
+    fnRoute(import.meta.url, fastify, {
+        // 接口名称
+        apiName: apiName,
+        // 请求参数约束
+        schemaRequest: {
+            type: 'object',
+            properties: {
+                page: metaConfig.page,
+                limit: metaConfig.limit,
+                pid: metaConfig.pid,
+                keyword: metaConfig.keyword
+            },
+            required: []
+        },
+        // 返回数据约束
+        schemaResponse: {},
+        // 执行函数
+        apiHandler: async (req, res) => {
             try {
-                let categoryModel = fastify.mysql //
-                    .table('navigation')
-                    .where({
-                        user_id: req.session.id
-                    })
-                    .modify(function (db) {
-                        if (req.body.pid > 0) db.where({ pid: req.body.pid });
+                const categoryModel = fastify.mysql //
+                    .table('category')
+                    .modify(function (qb) {
+                        if (req.body.keyword) {
+                            qb.where('name', 'like', `%${req.body.keyword}%`);
+                        }
                     });
 
-                let { total } = await categoryModel.clone().count('id', { as: 'total' }).first();
-                let rows = await categoryModel
-                    //
-                    .clone()
-                    .offset(yiapi.utils.fnPageOffset(req.body.page, req.body.limit))
-                    .limit(req.body.limit)
-                    .select();
+                // 记录总数
+                const { totalCount } = await categoryModel.clone().selectCount();
 
+                // 记录列表
+                const rows = await categoryModel
+                    .clone() //
+                    .orderBy('created_at', 'desc')
+                    .selectData(req.body.page, req.body.limit);
                 return {
-                    ...yiapi.codeConfig.SELECT_SUCCESS,
+                    ...httpConfig.SELECT_SUCCESS,
                     data: {
-                        total: total,
+                        total: totalCount,
                         rows: rows,
                         page: req.body.page,
                         limit: req.body.limit
@@ -50,8 +52,8 @@ export default async function (fastify, opts) {
                 };
             } catch (err) {
                 fastify.log.error(err);
-                return yiapi.codeConfig.SELECT_FAIL;
+                return httpConfig.SELECT_FAIL;
             }
         }
     });
-}
+};

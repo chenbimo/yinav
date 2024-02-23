@@ -43,6 +43,7 @@ export const yiteConfig = {
         optimizeDeps: {
             include: [
                 //
+                '@yicode/yite-cli',
                 'lodash-es',
                 'vue-i18n',
                 'js-md5',

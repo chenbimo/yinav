@@ -1,91 +1,42 @@
-import * as yiapi from '@yicode/yiapi';
+import { fnRoute, fnField } from '@yicode/yiapi/fn.js';
+import { httpConfig } from '@yicode/yiapi/config/httpConfig.js';
 import { metaConfig } from './_meta.js';
 
-let apiInfo = await yiapi.utils.fnApiInfo(import.meta.url);
-let selectKeys = yiapi.utils.fnSelectFields('./tables/nav_category.json', 'user');
+export const apiName = '查询所有分类';
 
-export let apiSchema = {
-    summary: `查询所有${metaConfig.name}`,
-    tags: [apiInfo.parentDirName],
-    body: {
-        title: `查询所有${metaConfig.name}接口`,
-        type: 'object',
-        properties: {
-            type: metaConfig.schema.type,
-            level: metaConfig.schema.level
+export default async (fastify) => {
+    // 当前文件的路径，fastify 实例
+    fnRoute(import.meta.url, fastify, {
+        // 接口名称
+        apiName: apiName,
+        // 请求参数约束
+        schemaRequest: {
+            type: 'object',
+            properties: {
+                page: metaConfig.page,
+                limit: metaConfig.limit
+            },
+            required: []
         },
-        required: ['type']
-    }
-};
-
-export default async function (fastify, opts) {
-    fastify.post(`/${apiInfo.pureFileName}`, {
-        schema: apiSchema,
-        handler: async function (req, res) {
+        // 返回数据约束
+        schemaResponse: {},
+        // 执行函数
+        apiHandler: async (req, res) => {
             try {
-                // 如果缓存命中，则读取缓存
-                // if (req.body.type === 'default') {
-                //     let cacheDataCategoryAll = await fastify.redisGet(`cacheData:navCategoryAll_${yiapi.appConfig.custom.nav.defaultId}`);
-                //     if (cacheDataCategoryAll) {
-                //         return {
-                //             ...yiapi.codeConfig.SELECT_SUCCESS,
-                //             data: {
-                //                 rows: cacheDataCategoryAll
-                //             }
-                //         };
-                //     }
-                // } else {
-                //     let cacheDataCategoryAll = await fastify.redisGet(`cacheData:navCategoryAll_${req.session.id}`);
-                //     if (cacheDataCategoryAll) {
-                //         return {
-                //             ...yiapi.codeConfig.SELECT_SUCCESS,
-                //             data: {
-                //                 rows: cacheDataCategoryAll
-                //             }
-                //         };
-                //     }
-                // }
-                let categoryModel = fastify.mysql.table(metaConfig.tableName).modify(function (db) {
-                    if (req.body.type === 'mine') {
-                        db.where({ user_id: req.session.id });
-                    }
-                    if (req.body.type === 'default') {
-                        db.where({ user_id: yiapi.appConfig.custom.nav.defaultId });
-                    }
-                });
+                const categoryModel = fastify.mysql.table('category').modify(function (db) {});
 
-                let rows = [];
-                if (req.body.level === 'mini') {
-                    rows = await categoryModel.clone().select(
-                        //
-                        'name',
-                        'id',
-                        'pid',
-                        'pids',
-                        'sort',
-                        'user_id',
-                        'level'
-                    );
-                } else {
-                    rows = await categoryModel.clone().select(selectKeys);
-                }
-                // 设置缓存
-                // if (req.body.type === 'default') {
-                //     await fastify.redisSet(`cacheData:navCategoryAll_${yiapi.appConfig.custom.nav.defaultId}`, rows, yiapi.appConfig.redis.ex);
-                // } else {
-                //     await fastify.redisSet(`cacheData:navCategoryAll_${req.session.id}`, rows, yiapi.appConfig.redis.ex);
-                // }
+                const rows = await categoryModel.clone().selectAll();
 
                 return {
-                    ...yiapi.codeConfig.SELECT_SUCCESS,
+                    ...httpConfig.SELECT_SUCCESS,
                     data: {
                         rows: rows
                     }
                 };
             } catch (err) {
                 fastify.log.error(err);
-                return yiapi.codeConfig.SELECT_FAIL;
+                return httpConfig.SELECT_FAIL;
             }
         }
     });
-}
+};

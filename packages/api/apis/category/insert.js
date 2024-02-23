@@ -1,81 +1,41 @@
-import * as yiapi from '@yicode/yiapi';
+import { fnRoute, fnField } from '@yicode/yiapi/fn.js';
+import { httpConfig } from '@yicode/yiapi/config/httpConfig.js';
 import { metaConfig } from './_meta.js';
 
-let apiInfo = await yiapi.utils.fnApiInfo(import.meta.url);
+export const apiName = '添加分类';
 
-export let apiSchema = {
-    summary: `添加${metaConfig.name}`,
-    tags: [apiInfo.parentDirName],
-    body: {
-        title: `添加${metaConfig.name}接口`,
-        type: 'object',
-        properties: {
-            pid: metaConfig.schema.pid,
-            name: metaConfig.schema.name,
-            icon: metaConfig.schema.icon,
-            sort: metaConfig.schema.sort,
-            describe: metaConfig.schema.describe
+export default async (fastify) => {
+    // 当前文件的路径，fastify 实例
+    fnRoute(import.meta.url, fastify, {
+        // 接口名称
+        apiName: apiName,
+        // 请求参数约束
+        schemaRequest: {
+            type: 'object',
+            properties: {
+                pid: metaConfig.pid,
+                name: metaConfig.name,
+                icon: metaConfig.icon,
+                sort: metaConfig.sort,
+                describe: metaConfig.describe
+            },
+            required: ['pid', 'name']
         },
-        required: ['pid', 'name']
-    }
-};
-
-export default async function (fastify, opts) {
-    fastify.post(`/${apiInfo.pureFileName}`, {
-        schema: apiSchema,
-        handler: async function (req, res) {
+        // 返回数据约束
+        schemaResponse: {},
+        // 执行函数
+        apiHandler: async (req, res) => {
             try {
-                let categoryModel = fastify.mysql.table('nav_category').modify(function (qb) {});
-                let userModel = fastify.mysql.table('sys_user');
-
-                // 用户数据
-                let userData = await userModel.clone().where({ id: req.session.id }).first();
-
-                if ([0, 1, 2, 3].includes(userData.nav_level) === false) {
-                    return {
-                        ...yiapi.codeConfig.FAIL,
-                        msg: '无效的用户等级，请联系管理员'
-                    };
-                }
-
-                let { categoryCount } = await categoryModel.clone().where({ user_id: req.session.id }).count('id', { as: 'categoryCount' }).first();
-
-                if (userData.nav_level === 0 && categoryCount >= 10) {
-                    return {
-                        ...yiapi.codeConfig.FAIL,
-                        msg: '普通用户最多创建10个分类'
-                    };
-                }
-
-                if (userData.nav_level === 1 && categoryCount >= 100) {
-                    return {
-                        ...yiapi.codeConfig.FAIL,
-                        msg: '白银用户最多创建100个分类'
-                    };
-                }
-
-                if (userData.nav_level === 2 && categoryCount >= 1000) {
-                    return {
-                        ...yiapi.codeConfig.FAIL,
-                        msg: '黄金用户最多创建1000个分类'
-                    };
-                }
-
-                if (userData.nav_level === 3 && categoryCount >= 10000) {
-                    return {
-                        ...yiapi.codeConfig.FAIL,
-                        msg: '钻石用户最多创建10000个分类'
-                    };
-                }
+                const categoryModel = fastify.mysql.table('category').modify(function (qb) {});
 
                 if (req.body.pid === 0) {
                     req.body.pids = '0';
                     req.body.level = 1;
                 } else {
-                    let parentData = await categoryModel.clone().where('id', req.body.pid).first();
+                    const parentData = await categoryModel.clone().where('id', req.body.pid).selectOne();
                     if (!parentData?.id) {
                         return {
-                            ...yiapi.codeConfig.FAIL,
+                            ...httpConfig.FAIL,
                             msg: '父级分类不存在'
                         };
                     }
@@ -85,12 +45,12 @@ export default async function (fastify, opts) {
 
                 if (req.body.level > 3) {
                     return {
-                        ...yiapi.codeConfig.FAIL,
+                        ...httpConfig.FAIL,
                         msg: '分类层级不能超过3层'
                     };
                 }
 
-                let insertData = {
+                const insertData = {
                     user_id: req.session.id,
                     pid: req.body.pid,
                     name: req.body.name,
@@ -100,29 +60,29 @@ export default async function (fastify, opts) {
                     pids: req.body.pids,
                     level: req.body.level
                 };
-                let result = await categoryModel.clone().insert(yiapi.utils.fnDbInsertData(insertData));
+                const result = await categoryModel.clone().insertData(insertData);
 
                 // 缓存全部分类
                 // let rows = await categoryModel.clone().where({ user_id: req.session.id }).select(
                 //     //
-                //     'nav_category.name',
-                //     'nav_category.id',
-                //     'nav_category.pid',
-                //     'nav_category.pids',
-                //     'nav_category.sort',
-                //     'nav_category.user_id'
+                //     'category.name',
+                //     'category.id',
+                //     'category.pid',
+                //     'category.pids',
+                //     'category.sort',
+                //     'category.user_id'
                 // );
 
-                // await fastify.redisSet(`cacheData:navCategoryAll_${req.session.id}`, rows, yiapi.appConfig.redis.ex);
+                // await fastify.redisSet(`cacheData:navCategoryAll_${req.session.id}`, rows);
 
                 return {
-                    ...yiapi.codeConfig.INSERT_SUCCESS,
+                    ...httpConfig.INSERT_SUCCESS,
                     data: result?.[0] || 0
                 };
             } catch (err) {
                 fastify.log.error(err);
-                return yiapi.codeConfig.INSERT_FAIL;
+                return httpConfig.INSERT_FAIL;
             }
         }
     });
-}
+};

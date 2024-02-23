@@ -1,65 +1,34 @@
-import * as yiapi from '@yicode/yiapi';
+import { fnRoute, fnField } from '@yicode/yiapi/fn.js';
+import { httpConfig } from '@yicode/yiapi/config/httpConfig.js';
 import { metaConfig } from './_meta.js';
 
-let apiInfo = await yiapi.utils.fnApiInfo(import.meta.url);
-let selectKeys = yiapi.utils.fnSelectFields('./tables/nav_navigation.json', 'user');
+export const apiName = '查询所有导航';
 
-export let apiSchema = {
-    summary: `查询${metaConfig.name}`,
-    tags: [apiInfo.parentDirName],
-    body: {
-        title: `查询${metaConfig.name}接口`,
-        type: 'object',
-        properties: {
-            pid: metaConfig.schema.pid,
-            type: metaConfig.schema.type,
-            mode: metaConfig.schema.mode,
-            keyword: metaConfig.schema.keyword,
-            level: metaConfig.schema.level
+export default async (fastify) => {
+    // 当前文件的路径，fastify 实例
+    fnRoute(import.meta.url, fastify, {
+        // 接口名称
+        apiName: apiName,
+        // 请求参数约束
+        schemaRequest: {
+            type: 'object',
+            properties: {
+                pid: metaConfig.pid,
+                type: metaConfig.type,
+                mode: metaConfig.mode,
+                keyword: metaConfig.keyword,
+                level: metaConfig.level
+            },
+            required: ['type', 'mode']
         },
-        required: ['type', 'mode']
-    }
-};
-
-export default async function (fastify, opts) {
-    fastify.post(`/${apiInfo.pureFileName}`, {
-        schema: apiSchema,
-        handler: async function (req, res) {
+        // 返回数据约束
+        schemaResponse: {},
+        // 执行函数
+        apiHandler: async (req, res) => {
             try {
-                // 如果缓存命中，则读取缓存
-                // if (req.body.type === 'default') {
-                //     let cacheDataNavigationAll = await fastify.redisGet(`cacheData:navigationAll_${yiapi.appConfig.custom.nav.defaultId}`);
-                //     if (cacheDataNavigationAll) {
-                //         return {
-                //             ...yiapi.codeConfig.SELECT_SUCCESS,
-                //             data: {
-                //                 rows: cacheDataNavigationAll
-                //             }
-                //         };
-                //     }
-                // } else {
-                //     let cacheDataNavigationAll = await fastify.redisGet(`cacheData:navigationAll_${req.session.id}`);
-                //     if (cacheDataNavigationAll) {
-                //         return {
-                //             ...yiapi.codeConfig.SELECT_SUCCESS,
-                //             data: {
-                //                 rows: cacheDataNavigationAll
-                //             }
-                //         };
-                //     }
-                // }
-
-                let navigationModel = fastify.mysql //
-                    .table(metaConfig.tableName)
+                const navigationModel = fastify.mysql //
+                    .table('navigation')
                     .modify(function (db) {
-                        if (req.body.type === 'mine') {
-                            db.where('user_id', req.session.id);
-                        }
-
-                        if (req.body.type === 'default') {
-                            db.where('user_id', yiapi.appConfig.custom.nav.defaultId);
-                        }
-
                         if (req.body.keyword) {
                             db.where('name', 'like', `%${req.body.keyword}%`);
                         }
@@ -84,27 +53,23 @@ export default async function (fastify, opts) {
                 // 获取导航数据
                 let rows = [];
                 if (req.body.level === 'mini') {
-                    rows = await navigationModel.clone().select('id', 'pid', 'pids', 'sort', 'user_id');
+                    rows = await navigationModel.clone().selectAll('id', 'pid', 'pids', 'sort', 'user_id');
                 } else {
-                    rows = await navigationModel.clone().select(selectKeys);
+                    rows = await navigationModel.clone().selectAll();
                 }
 
                 // 设置缓存
-                // if (req.body.type === 'default') {
-                //     await fastify.redisSet(`cacheData:navigationAll_${yiapi.appConfig.custom.nav.defaultId}`, rows, yiapi.appConfig.redis.ex);
-                // } else {
-                //     await fastify.redisSet(`cacheData:navigationAll_${req.session.id}`, rows, yiapi.appConfig.redis.ex);
-                // }
+                //     await fastify.redisSet(`cacheData:navigationAll_${req.session.id}`, rows);
                 return {
-                    ...yiapi.codeConfig.SELECT_SUCCESS,
+                    ...httpConfig.SELECT_SUCCESS,
                     data: {
                         rows: rows
                     }
                 };
             } catch (err) {
                 fastify.log.error(err);
-                return yiapi.codeConfig.SELECT_FAIL;
+                return httpConfig.SELECT_FAIL;
             }
         }
     });
-}
+};

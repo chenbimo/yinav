@@ -12,7 +12,7 @@
                         <div class="site-logo">
                             <img class="img" :src="utilInternalAssets('logo.png')" />
                         </div>
-                        <div class="site-title">{{ $GlobalData?.appConfig?.name }}后台管理系统</div>
+                        <div class="site-title">{{ $GlobalData?.appConfig?.name }}后台管理</div>
                         <div class="form-panel">
                             <a-space direction="vertical">
                                 <a-input v-model="$Data.formData.account" placeholder="请输入账号">
@@ -43,9 +43,9 @@
                 <!--  -->
                 <a class="link" href="https://yicode.tech" target="_blank">随易科技</a>研发的
                 <!--  -->
-                <a class="link" href="https://gitee.com/yicode-team/yicode/tree/master/packages/yiapi" target="_blank">易接口</a>和
+                <a class="link" href="https://github.com/chenbimo/yicode/tree/master/packages/yiapi" target="_blank">易接口</a>和
                 <!--  -->
-                <a class="link" href="https://gitee.com/yicode-team/yicode/tree/master/templates/admin-vue3" target="_blank">易管理</a>驱动
+                <a class="link" href="https://github.com/chenbimo/yicode/tree/master/templates/yiadmin" target="_blank">易管理</a>驱动
             </div>
         </div>
     </div>

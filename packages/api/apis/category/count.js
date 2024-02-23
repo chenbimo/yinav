@@ -1,46 +1,48 @@
-import * as yiapi from '@yicode/yiapi';
+import { fnRoute, fnField } from '@yicode/yiapi/fn.js';
+import { httpConfig } from '@yicode/yiapi/config/httpConfig.js';
+import { customConfig } from '../../config/custom.js';
 import { metaConfig } from './_meta.js';
 
-let apiInfo = await yiapi.utils.fnApiInfo(import.meta.url);
+export const apiName = '查询分类总数';
 
-export let apiSchema = {
-    summary: `查询${metaConfig.name}总数`,
-    tags: [apiInfo.parentDirName],
-    body: {
-        title: `查询${metaConfig.name}总数接口`,
-        type: 'object',
-        properties: {
-            type: yiapi.utils.fnSchema(null, '数据类型', 'string', null, null, ['mine', 'default'])
+export default async (fastify) => {
+    // 当前文件的路径，fastify 实例
+    fnRoute(import.meta.url, fastify, {
+        // 接口名称
+        apiName: apiName,
+        // 请求参数约束
+        schemaRequest: {
+            type: 'object',
+            properties: {
+                page: metaConfig.page,
+                limit: metaConfig.limit
+            },
+            required: []
         },
-        required: ['type']
-    }
-};
-
-export default async function (fastify, opts) {
-    fastify.post(`/${apiInfo.pureFileName}`, {
-        schema: apiSchema,
-        handler: async function (req, res) {
+        // 返回数据约束
+        schemaResponse: {},
+        // 执行函数
+        apiHandler: async (req, res) => {
             try {
-                let categoryModel = fastify.mysql.table('nav_category').modify(function (db) {
-                    if (req.body.type === 'mine') {
-                        db.where({ user_id: req.session.id });
-                    }
-                    if (req.body.type === 'default') {
-                        db.where({ user_id: yiapi.appConfig.custom.nav.defaultId });
-                    }
-                });
+                const categoryModel = fastify.mysql //
+                    .table('category')
+                    .modify(function (qb) {});
 
-                let { total } = await categoryModel.clone().count('id', { as: 'total' }).first();
+                // 记录总数
+                const { totalCount } = await categoryModel
+                    .clone() //
+                    .selectCount();
+
                 return {
-                    ...yiapi.codeConfig.SELECT_SUCCESS,
+                    ...httpConfig.SELECT_SUCCESS,
                     data: {
-                        total: total
+                        total: totalCount
                     }
                 };
             } catch (err) {
                 fastify.log.error(err);
-                return yiapi.codeConfig.SELECT_FAIL;
+                return httpConfig.SELECT_FAIL;
             }
         }
     });
-}
+};
