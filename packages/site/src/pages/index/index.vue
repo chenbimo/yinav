@@ -1,5 +1,11 @@
 <template>
-    <div class="page-nav-manage-site">
+    <div class="page-index">
+        <!-- <div class="page-header">
+            <div class="left">
+
+            </div>
+            <div class="right"></div>
+        </div> -->
         <div class="page-menu">
             <div class="add-category">
                 <a-button v-if="$GlobalData.token && $Data.dataType === 'mine'" type="primary" size="mini" long @click="$Method.onExecCatetoryAction('insertCategory', { id: 0 })">添加分类</a-button>
@@ -7,21 +13,23 @@
             </div>
             <a-scrollbar style="height: calc(100vh - 100px); overflow: auto">
                 <div class="page-menu-inner">
-                    <template v-if="$Data.categoryData.length <= 0">
+                    <template v-if="$Data.categoryTree.length <= 1">
                         <a-empty>暂无分类数据</a-empty>
                     </template>
-                    <a-tree :data="$Data.categoryTree" :field-names="$Data.treeFieldNames" size="medium" showLine blockNode action-on-node-click="expand" @select="$Method.onSelectCategory">
-                        <template #switcher-icon="node, { isLeaf }">
-                            <IconDown v-if="!isLeaf" />
-                            <icon-common v-if="isLeaf" />
-                        </template>
-                        <template #title="item">
-                            <div class="tree-title">
-                                {{ item.name }}
-                                <span class="child-count">({{ item.count }})</span>
-                            </div>
-                        </template>
-                    </a-tree>
+                    <template v-else>
+                        <a-tree :data="$Data.categoryTree" :field-names="$Data.treeFieldNames" size="medium" showLine blockNode @select="$Method.onSelectCategory">
+                            <template #switcher-icon="node, { isLeaf }">
+                                <IconDown v-if="!isLeaf" />
+                                <icon-common v-if="isLeaf" />
+                            </template>
+                            <template #title="item">
+                                <div class="tree-title">
+                                    {{ item.name }}
+                                    <span class="child-count">({{ item.count }})</span>
+                                </div>
+                            </template>
+                        </a-tree>
+                    </template>
                 </div>
             </a-scrollbar>
         </div>
@@ -29,15 +37,18 @@
         <div class="page-bodyer">
             <div class="table-filter">
                 <div class="left">
-                    <template v-if="$Data.categoryItem?.id">
-                        {{ $Data.categoryItem?.name }}
+                    <!-- <a-breadcrumb>
+                        <a-breadcrumb-item v-for="item in $Data.breadcrumbItem" :key="item.id">{{ item.name }}</a-breadcrumb-item>
+                    </a-breadcrumb>
+                    <template v-if="$Data.breadcrumbItem.length > 0">
+                        <div class="w-10px"></div>
                         <a-link status="danger" @click="$Method.onResetCategory">
                             <template #icon>
                                 <icon-close-circle />
                             </template>
                             重置
                         </a-link>
-                    </template>
+                    </template> -->
                 </div>
                 <div class="right">
                     <a-space>
@@ -109,10 +120,10 @@ import { format } from 'date-fns';
 // 组件集
 
 // 全局集
-let { $GlobalData, $GlobalComputed, $GlobalMethod } = useGlobal();
+const { $GlobalData, $GlobalComputed, $GlobalMethod } = useGlobal();
 
 // 数据集
-let $Data = $ref({
+const $Data = $ref({
     // 显示和隐藏
     isShow: {
         editDataDrawer: false,
@@ -139,6 +150,8 @@ let $Data = $ref({
     categoryItem: {
         id: 0
     },
+    // 面包屑导航
+    breadcrumbItem: [],
     navigationData: [],
     pagination: {
         page: 1,
@@ -173,6 +186,7 @@ const $Method = {
         $Method.fnFreshData();
     },
     onResetCategory() {
+        $Data.breadcrumbItem = [];
         $Data.categoryItem = {
             id: 0
         };
@@ -217,7 +231,18 @@ const $Method = {
         }
     },
     // 选择分类
-    async onSelectCategory(keys, data, cc) {
+    async onSelectCategory(keys, data) {
+        // $Data.breadcrumbItem = [];
+        // $Data.breadcrumbItem.unshift(data.node);
+        // if (data.node.pid !== 0) {
+        //     const categoryItem2 = $Data.categoryDataById[data.node.pid] || {};
+        //     $Data.breadcrumbItem.unshift(categoryItem2);
+        //     if (categoryItem2.pid !== 0) {
+        //         const categoryItem1 = $Data.categoryDataById[categoryItem2.pid] || {};
+        //         $Data.breadcrumbItem.unshift(categoryItem1);
+        //     }
+        // }
+
         $Data.categoryItem = _.omit(data.node, ['children']);
         await $Method.apiGetNavigation();
     },
@@ -304,7 +329,6 @@ const $Method = {
             $Data.navigationTotal = res.data.total;
         } catch (err) {
             console.log('🚀 ~ file: index.vue:224 ~ apiGeetCategoryTotal ~ err:', err);
-        } finally {
         }
     },
     // 查询分类
@@ -374,7 +398,7 @@ const $Method = {
         });
         $Data.categoryDataById = _.keyBy(res.data.rows, 'id');
         $Data.categoryData = _.cloneDeep(res.data.rows);
-        $Data.categoryTree = tree_array2Tree(res.data.rows);
+        $Data.categoryTree = [{ id: 0, pid: 0, name: '全部', count: resultNavigation.data.rows.length }, ...tree_array2Tree(res.data.rows)];
     },
     // 查询导航
     async apiGetNavigation() {
@@ -384,7 +408,7 @@ const $Method = {
                 data: {
                     type: $Data.dataType,
                     mode: $Data.dataMode,
-                    pid: $Data.categoryItem.id,
+                    pid: $Data.categoryItem?.id || 0,
                     page: $Data.pagination.page,
                     limit: $Data.pagination.limit,
                     keyword: $Data.keyword
@@ -408,7 +432,7 @@ $Method.initData();
 </script>
 
 <style lang="scss">
-.page-nav-manage-site {
+.page-index {
     $page-menu-width: 240px;
     $table-filter-height: 50px;
     $table-page-height: 40px;
@@ -505,6 +529,10 @@ $Method.initData();
             padding: 0 10px;
             .arco-switch-handle {
                 color: #165dff !important;
+            }
+            .left {
+                display: flex;
+                align-items: center;
             }
             .right {
                 display: flex;
