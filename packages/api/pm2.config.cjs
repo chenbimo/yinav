@@ -1,7 +1,7 @@
 module.exports = {
     apps: [
         {
-            name: 'yicode_demo',
+            name: 'yinav',
             instances: 'max',
             script: './yiapi.js',
             exec_mode: 'cluster',
