@@ -15,7 +15,7 @@ const appConfig = {
     // 加密盐，请重新设置为一个随机值
     salt: 'yinav-bdecbc98-db43-c0fb-5c49-4d87fade630b',
     // 监听端口
-    port: 3000,
+    port: 3021,
     // 监听主机
     host: '127.0.0.1',
     // 超级管理员密码
