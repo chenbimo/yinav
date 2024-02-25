@@ -24,6 +24,20 @@
 
 你可以使用本项目，很方便快捷地部署到自己的服务器上，获得属于自己的 `网址导航`。
 
+## 功能计划
+
+**v1**
+
+1. [ ] 一个网址有多个导航，聚合展示。
+2. [ ] 导航可以切换列表和卡片模式。
+3. [ ] 增加显示导航的图标。
+4. [ ] 导航可以排序。
+5. [ ] 后台管理显示分类的名称。
+
+**v2**
+
+1. [ ] 增加导航首页功能，选取部分导航组成首页。
+
 ## 谁开发的？
 
 本项目由 [随易科技 https://yicode.tech](https://yicode.tech) 研发，开源免费使用。
@@ -35,6 +49,8 @@ yicode（易编程）系列软件开发生态，全部由 `陈随易` 自 `2019`
 致力于为中小企业、外包公司、软件工作室和个人开发者，提供技术规范、项目模板、效率工具等。
 
 ## 其他项目介绍
+
+[开源地址 - https://github.com/chenbimo/yicode](https://github.com/chenbimo/yicode)
 
 主要开源项目
 
@@ -91,11 +107,11 @@ yicode（易编程）系列软件开发生态，全部由 `陈随易` 自 `2019`
 
 支付宝赞赏码
 
-![支付宝](https://static.chensuiyi.com/alipay-qrcode.png)
+![支付宝](https://static.yicode.tech/alipay-qrcode.png)
 
 微信赞赏码
 
-![微信收款码](https://static.chensuiyi.com/wepay-qrcode.png)
+![微信收款码](https://static.yicode.tech/wepay-qrcode.png)
 
 ## 版权说明
 
