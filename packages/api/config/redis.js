@@ -13,7 +13,7 @@ export const redisConfig = {
         host: '127.0.0.1',
         port: 6379,
         username: '',
-        password: '123456789123456789',
+        password: 'ca9e1e0f31ca5712854d57ce48d41383',
         db: 0,
         keyPrefix: 'yinav:'
     }
