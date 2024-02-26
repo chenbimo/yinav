@@ -130,7 +130,7 @@ const $Method = {
     async apiDeleteData() {
         try {
             const res = await $Http({
-                url: '/menu/delete',
+                url: '/category/delete',
                 data: {
                     id: $Data.rowData.id
                 }

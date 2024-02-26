@@ -12,6 +12,12 @@
                 <a-form-item field="describe" label="分类描述">
                     <a-input v-model="$Data.formData.describe" placeholder="请输入分类描述..." />
                 </a-form-item>
+                <a-form-item field="describe" label="是否私有">
+                    <a-radio-group v-model="$Data.formData.is_private">
+                        <a-radio :value="1">私有分类</a-radio>
+                        <a-radio :value="0">公开分类</a-radio>
+                    </a-radio-group>
+                </a-form-item>
             </a-form>
         </div>
     </a-drawer>
@@ -59,6 +65,7 @@ const $Data = $ref({
     formData: {
         pid: '',
         name: '',
+        is_private: 0,
         describe: ''
     }
 });
