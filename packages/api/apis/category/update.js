@@ -18,6 +18,7 @@ export default async (fastify) => {
                 name: metaConfig.name,
                 icon: metaConfig.icon,
                 sort: metaConfig.sort,
+                is_private: metaConfig.is_private,
                 describe: metaConfig.describe
             },
             required: ['id']
@@ -62,6 +63,7 @@ export default async (fastify) => {
                     name: req.body.name,
                     icon: req.body.icon,
                     sort: req.body.sort,
+                    is_private: req.body.is_private,
                     describe: req.body.describe
                 };
 
@@ -86,15 +88,15 @@ export default async (fastify) => {
                         });
                 }
 
-                const rows = await categoryModel.clone().select(
-                    //
-                    'category.name',
-                    'category.id',
-                    'category.pid',
-                    'category.pids',
-                    'category.sort',
-                    'category.user_id'
-                );
+                // const rows = await categoryModel.clone().select(
+                //     //
+                //     'category.name',
+                //     'category.id',
+                //     'category.pid',
+                //     'category.pids',
+                //     'category.sort',
+                //     'category.user_id'
+                // );
 
                 // await fastify.redisSet(`cacheData:navCategoryAll_${req.session.id}`, rows);
 

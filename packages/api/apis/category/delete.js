@@ -51,7 +51,7 @@ export default async (fastify) => {
                     'category.user_id'
                 );
 
-                await fastify.redisSet(`cacheData:navCategoryAll_${req.session.id}`, rows);
+                await fastify.redisSet(`cacheData:navCategoryAll_${req.session?.id}`, rows);
 
                 return {
                     ...httpConfig.DELETE_SUCCESS,

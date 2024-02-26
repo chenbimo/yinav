@@ -8,6 +8,8 @@ export const metaConfig = fnMeta(import.meta.url, {
     keyword: fnSchema(null, '关键字', 'string', 0, 20, ''),
     link: fnSchema(null, '导航链接', 'string', 0, 300),
     sort: fnSchema(schemaField.min1, '导航排序'),
+    is_private: fnSchema(schemaField.boolEnum, '是否私有'),
+    is_home: fnSchema(schemaField.boolEnum, '是否显示到首页'),
     describe: fnSchema(null, '导航描述', 'string', 0, 200, ''),
     type: fnSchema(null, '数据类型', 'string', null, null, ['mine', 'default']),
     mode: fnSchema(null, '数据模式', 'string', null, null, ['k', 's']),

@@ -7,6 +7,7 @@ export const metaConfig = fnMeta(import.meta.url, {
     name: fnSchema(null, '分类名称', 'string', 1, 30),
     icon: fnSchema(schemaField.image, '分类图标'),
     sort: fnSchema(schemaField.min1, '分类排序'),
+    is_private: fnSchema(schemaField.boolEnum, '是否私有'),
     describe: fnSchema(null, '分类描述', 'string', 0, 200, ''),
     type: fnSchema(null, '数据类型', 'string', null, null, ['mine', 'default']),
     mode: fnSchema(null, '数据模式', 'string', null, null, ['k', 's']),

@@ -17,6 +17,7 @@ export default async (fastify) => {
                 limit: metaConfig.limit,
                 pid: metaConfig.pid,
                 mode: metaConfig.mode,
+                is_private: metaConfig.is_private,
                 keyword: metaConfig.keyword,
                 level: metaConfig.level
             },
@@ -32,6 +33,14 @@ export default async (fastify) => {
                     .modify(function (qb) {
                         if (req.body.keyword) {
                             qb.where('name', 'like', `%${req.body.keyword}%`);
+                        }
+
+                        if (req.session?.role_codes !== 'dev') {
+                            qb.where('is_private', 0);
+                        } else {
+                            if (req.body.is_private !== undefined) {
+                                qb.where('is_private', req.body.is_private);
+                            }
                         }
                         // 扩散模式
                         if (req.body.mode === 'k') {

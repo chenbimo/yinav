@@ -16,6 +16,7 @@ export default async (fastify) => {
                 page: metaConfig.page,
                 limit: metaConfig.limit,
                 pid: metaConfig.pid,
+                is_private: metaConfig.is_private,
                 keyword: metaConfig.keyword
             },
             required: []
@@ -30,6 +31,13 @@ export default async (fastify) => {
                     .modify(function (qb) {
                         if (req.body.keyword) {
                             qb.where('name', 'like', `%${req.body.keyword}%`);
+                        }
+                        if (req.session?.role_codes !== 'dev') {
+                            qb.where('is_private', 0);
+                        } else {
+                            if (req.body.is_private !== undefined) {
+                                qb.where('is_private', req.body.is_private);
+                            }
                         }
                     });
 

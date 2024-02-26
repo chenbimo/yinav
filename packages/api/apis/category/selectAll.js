@@ -13,8 +13,7 @@ export default async (fastify) => {
         schemaRequest: {
             type: 'object',
             properties: {
-                page: metaConfig.page,
-                limit: metaConfig.limit
+                is_private: metaConfig.is_private
             },
             required: []
         },
@@ -23,7 +22,15 @@ export default async (fastify) => {
         // 执行函数
         apiHandler: async (req, res) => {
             try {
-                const categoryModel = fastify.mysql.table('category').modify(function (db) {});
+                const categoryModel = fastify.mysql.table('category').modify(function (qb) {
+                    if (req.session?.role_codes !== 'dev') {
+                        qb.where('is_private', 0);
+                    } else {
+                        if (req.body.is_private !== undefined) {
+                            qb.where('is_private', req.body.is_private);
+                        }
+                    }
+                });
 
                 const rows = await categoryModel.clone().selectAll();
 

@@ -40,6 +40,12 @@
             "comment": "描述",
             "length": 500,
             "default": ""
+        },
+        "is_private": {
+            "type": "tinyint",
+            "comment": "是否私密",
+            "length": 1,
+            "default": 0
         }
     }
 }

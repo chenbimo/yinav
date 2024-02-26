@@ -25,7 +25,15 @@ export default async (fastify) => {
             try {
                 const navigationModel = fastify.mysql //
                     .table('navigation')
-                    .modify(function (qb) {});
+                    .modify(function (qb) {
+                        if (req.session?.role_codes !== 'dev') {
+                            qb.where('is_private', 0);
+                        } else {
+                            if (req.body.is_private !== undefined) {
+                                qb.where('is_private', req.body.is_private);
+                            }
+                        }
+                    });
 
                 // 记录总数
                 const { totalCount } = await navigationModel

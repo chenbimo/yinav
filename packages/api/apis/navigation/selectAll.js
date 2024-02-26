@@ -17,7 +17,8 @@ export default async (fastify) => {
                 type: metaConfig.type,
                 mode: metaConfig.mode,
                 keyword: metaConfig.keyword,
-                level: metaConfig.level
+                level: metaConfig.level,
+                is_private: metaConfig.is_private
             },
             required: ['type', 'mode']
         },
@@ -28,15 +29,23 @@ export default async (fastify) => {
             try {
                 const navigationModel = fastify.mysql //
                     .table('navigation')
-                    .modify(function (db) {
+                    .modify(function (qb) {
                         if (req.body.keyword) {
-                            db.where('name', 'like', `%${req.body.keyword}%`);
+                            qb.where('name', 'like', `%${req.body.keyword}%`);
+                        }
+
+                        if (req.session?.role_codes !== 'dev') {
+                            qb.where('is_private', 0);
+                        } else {
+                            if (req.body.is_private !== undefined) {
+                                qb.where('is_private', req.body.is_private);
+                            }
                         }
 
                         // 扩散模式
                         if (req.body.mode === 'k') {
                             if (req.body.pid > 0) {
-                                db.where(function () {
+                                qb.where(function () {
                                     this.where(fastify.mysql.raw(`FIND_IN_SET('${req.body.pid}',\`pids\`)`)).orWhere('pid', req.body.pid);
                                 });
                             }
@@ -45,7 +54,7 @@ export default async (fastify) => {
                         // 收敛模式
                         if (req.body.mode === 's') {
                             if (req.body.pid > 0) {
-                                db.where('pid', req.body.pid);
+                                qb.where('pid', req.body.pid);
                             }
                         }
                     });

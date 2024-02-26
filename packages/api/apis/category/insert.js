@@ -17,9 +17,10 @@ export default async (fastify) => {
                 name: metaConfig.name,
                 icon: metaConfig.icon,
                 sort: metaConfig.sort,
+                is_private: metaConfig.is_private,
                 describe: metaConfig.describe
             },
-            required: ['pid', 'name']
+            required: ['pid', 'name', 'is_private']
         },
         // 返回数据约束
         schemaResponse: {},
@@ -51,14 +52,15 @@ export default async (fastify) => {
                 }
 
                 const insertData = {
-                    user_id: req.session.id,
+                    user_id: req.session?.id,
                     pid: req.body.pid,
                     name: req.body.name,
                     icon: req.body.icon,
                     sort: req.body.sort,
                     describe: req.body.describe,
                     pids: req.body.pids,
-                    level: req.body.level
+                    level: req.body.level,
+                    is_private: req.body.is_private
                 };
                 const result = await categoryModel.clone().insertData(insertData);
 

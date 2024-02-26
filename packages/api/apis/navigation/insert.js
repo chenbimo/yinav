@@ -17,9 +17,10 @@ export default async (fastify) => {
                 name: metaConfig.name,
                 link: metaConfig.link,
                 sort: metaConfig.sort,
+                is_private: metaConfig.is_private,
                 describe: metaConfig.describe
             },
-            required: ['pid', 'name', 'link']
+            required: ['pid', 'name', 'link', 'is_private']
         },
         // 返回数据约束
         schemaResponse: {},
@@ -49,6 +50,7 @@ export default async (fastify) => {
                     name: req.body.name,
                     link: req.body.link,
                     sort: req.body.sort,
+                    is_private: req.body.is_private,
                     describe: req.body.describe
                 });
 
