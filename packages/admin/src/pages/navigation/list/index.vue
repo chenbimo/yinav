@@ -16,7 +16,11 @@
             <a-table :data="$Data.tableData" :scroll="$GlobalData.tableScroll" :pagination="false" :bordered="$GlobalData.tableBordered" row-key="id">
                 <template #columns>
                     <a-table-column title="名称" data-index="name" :width="200"></a-table-column>
-                    <a-table-column title="地址" data-index="link" :width="300"></a-table-column>
+                    <a-table-column title="地址" data-index="link" :width="300">
+                        <template #cell="{ record }">
+                            <a class="href-link" :href="record.link" target="_blank">{{ record.link }}</a>
+                        </template>
+                    </a-table-column>
                     <a-table-column title="描述" data-index="describe" :width="300"></a-table-column>
                     <a-table-column title="分类" data-index="category_name" :width="100"></a-table-column>
                     <a-table-column title="分类链" data-index="category_names" :width="300"></a-table-column>
