@@ -18,8 +18,8 @@
                     <a-table-column title="名称" data-index="name" :width="200"></a-table-column>
                     <a-table-column title="地址" data-index="link" :width="300"></a-table-column>
                     <a-table-column title="描述" data-index="describe" :width="300"></a-table-column>
-                    <a-table-column title="分类" data-index="pid" :width="100"></a-table-column>
-                    <a-table-column title="分类链" data-index="pids" :width="100"></a-table-column>
+                    <a-table-column title="分类" data-index="category_name" :width="100"></a-table-column>
+                    <a-table-column title="分类链" data-index="category_names" :width="300"></a-table-column>
                     <a-table-column title="排序" data-index="sort" :width="100"></a-table-column>
                     <a-table-column title="创建时间" data-index="created_at2" :width="150"></a-table-column>
                     <a-table-column title="更新时间" data-index="updated_at2" :width="150"></a-table-column>
@@ -80,12 +80,14 @@ const $Data = $ref({
     pagination: {
         page: 1,
         total: 0
-    }
+    },
+    categoryById: {}
 });
 
 // 方法集
 const $Method = {
     async initData() {
+        await $Method.apiSelectAllCategory();
         await $Method.apiSelectData();
     },
     // 触发数据事件
@@ -111,6 +113,20 @@ const $Method = {
         $Method.apiSelectData();
     },
     // 查询用户数据
+    async apiSelectAllCategory() {
+        try {
+            const res = await $Http({
+                url: '/category/selectAll',
+                data: {}
+            });
+            $Data.categoryById = _.keyBy(res.data.rows, 'id');
+        } catch (err) {
+            Message.error({
+                content: err.msg || err
+            });
+        }
+    },
+    // 查询用户数据
     async apiSelectData() {
         try {
             const res = await $Http({
@@ -120,7 +136,21 @@ const $Method = {
                     limit: $GlobalData.pageLimit
                 }
             });
-            $Data.tableData = datetime_relativeTime(res.data.rows);
+
+            $Data.tableData = datetime_relativeTime(res.data.rows).map((item) => {
+                item.category_name = $Data.categoryById[item.pid]?.name || '';
+                item.category_names = (
+                    item.pids?.split(',')?.map((pid) => {
+                        if (pid === '0') {
+                            return '根分类';
+                        } else {
+                            return $Data.categoryById[pid]?.name || '';
+                        }
+                    }) || ''
+                ).join('/');
+
+                return item;
+            });
             $Data.pagination.total = res.data.total;
         } catch (err) {
             Message.error({
