@@ -111,6 +111,20 @@ const $Method = {
 
             return;
         }
+
+        // 删除数据
+        if ($Data.actionType === 'deleteData') {
+            Modal.confirm({
+                title: '提示',
+                content: '请确认是否删除？',
+                modalClass: 'delete-modal-class',
+                alignCenter: true,
+                onOk() {
+                    $Method.apiDeleteData();
+                }
+            });
+            return;
+        }
     },
     // 刷新数据
     async fnFreshData() {
@@ -156,6 +170,25 @@ const $Method = {
                 return item;
             });
             $Data.pagination.total = res.data.total;
+        } catch (err) {
+            Message.error({
+                content: err.msg || err
+            });
+        }
+    },
+    // 删除菜单
+    async apiDeleteData() {
+        try {
+            const res = await $Http({
+                url: '/navigation/delete',
+                data: {
+                    id: $Data.rowData.id
+                }
+            });
+            await $Method.apiSelectData();
+            Message.success({
+                content: res.msg
+            });
         } catch (err) {
             Message.error({
                 content: err.msg || err
