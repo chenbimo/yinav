@@ -1,17 +1,14 @@
-import { fnSchema, fnMeta } from '@yicode/yiapi/fn.js';
-import { schemaField } from '@yicode/yiapi/config/schemaField.js';
-
-export const metaConfig = fnMeta(import.meta.url, {
-    _name: '导航分类',
-    pid: fnSchema(schemaField.pid, '分类ID'),
-    name: fnSchema(null, '导航名称', 'string', 1, 30),
-    keyword: fnSchema(null, '关键字', 'string', 0, 20, ''),
-    link: fnSchema(null, '导航链接', 'string', 0, 300),
-    sort: fnSchema(schemaField.min1, '导航排序'),
-    is_private: fnSchema(schemaField.boolEnum, '是否私有'),
-    is_home: fnSchema(schemaField.boolEnum, '是否显示到首页'),
-    describe: fnSchema(null, '导航描述', 'string', 0, 200, ''),
-    type: fnSchema(null, '数据类型', 'string', null, null, ['mine', 'default']),
-    mode: fnSchema(null, '数据模式', 'string', null, null, ['k', 's']),
-    level: fnSchema(null, '数据等级', 'string', null, null, ['mini', 'medium', 'large'])
-});
+export const metaConfig = {
+    dirName: '导航链接',
+    apiNames: {
+        insert: '添加导航链接',
+        delete: '删除导航链接',
+        select: '分页导航链接',
+        update: '更新导航链接',
+        detail: '详情导航链接',
+        count: '查询导航链接总数',
+        selectAll: '查询所有导航链接',
+        list: '查询导航链接列表',
+        home: '查询首页导航链接'
+    }
+};

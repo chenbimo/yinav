@@ -1,25 +1,16 @@
-import { fnRoute, fnField } from '@yicode/yiapi/fn.js';
-import { httpConfig } from '@yicode/yiapi/config/httpConfig.js';
-import { metaConfig } from './_meta.js';
-
-export const apiName = '查询导航总数';
+import { fnRoute, fnSchema, httpConfig } from 'funpi';
+import { tableData } from '../../tables/navigation.js';
 
 export default async (fastify) => {
-    // 当前文件的路径，fastify 实例
     fnRoute(import.meta.url, fastify, {
-        // 接口名称
-        apiName: apiName,
-        // 请求参数约束
         schemaRequest: {
             type: 'object',
             properties: {
-                page: metaConfig.page,
-                limit: metaConfig.limit
+                page: fnSchema('page'),
+                limit: fnSchema('limit')
             },
             required: []
         },
-        // 返回数据约束
-        schemaResponse: {},
         // 执行函数
         apiHandler: async (req, res) => {
             try {

@@ -18,37 +18,62 @@ export const tableData = {
         max: 10000,
         default: '0'
     },
-    level: {
-        type: 'tinyInt',
-        name: '目录层级',
-        default: 1
-    },
     name: {
         type: 'string',
-        name: '名称',
-        max: 100,
+        name: '导航名称',
+        max: 20,
         default: ''
     },
-    icon: {
+    link: {
         type: 'string',
-        name: '图标',
-        max: 300,
+        name: '导航链接',
+        max: 500,
         default: ''
+    },
+    level: {
+        type: 'string',
+        name: '导航级别',
+        max: 20,
+        default: ''
+    },
+    mode: {
+        type: 'string',
+        name: '导航模式',
+        default: 'k',
+        enum: ['k', 's']
+    },
+    type: {
+        type: 'string',
+        name: '导航类型',
+        default: 'default',
+        enum: ['mine', 'default']
     },
     sort: {
         type: 'bigInt',
-        name: '字典排序',
+        name: '导航排序',
         default: 1
     },
     describe: {
         type: 'string',
-        name: '描述',
+        name: '导航描述',
         max: 500,
+        default: ''
+    },
+    thumbnail: {
+        type: 'string',
+        name: '导航缩略图',
+        max: 300,
         default: ''
     },
     is_private: {
         type: 'tinyInt',
         name: '是否私密',
+        max: 1,
+        default: 0
+    },
+    is_home: {
+        type: 'tinyInt',
+        name: '是否主页显示',
         max: 1,
         default: 0
     }
