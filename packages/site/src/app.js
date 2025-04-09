@@ -1,5 +1,4 @@
 import App from '@/App.vue';
-import 'virtual:uno.css';
 
 let app = createApp(App);
 

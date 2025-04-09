@@ -10,14 +10,11 @@
         "registry": "https://registry.npmjs.org"
     },
     "scripts": {
-        "preinstall": "npx only-allow pnpm",
-        "dev": "nodemon --config=nodemon.json",
-        "build": "pm2 start pm2.config.cjs",
-        "syncCoreDb:dev": "node --env-file=env/.development.env ./scripts/syncCoreDatabase.js",
-        "syncCoreDb:build": "node --env-file=env/.production.env ./scripts/syncCoreDatabase.js",
-        "syncUserDb:dev": "node --env-file=env/.development.env ./scripts/syncUserDatabase.js",
-        "syncUserDb:build": "node --env-file=env/.production.env ./scripts/syncUserDatabase.js",
-        "flamegraph": "pnpm dlx rimraf .cache/0x & pnpm dlx 0x --output-dir=.cache/0x --output-html={outputDir}/index.html -- node --env-file=env/.development.env yiapi.js"
+        "dev": "bun --watch --env-file=./.env.development funpi.js",
+        "server": "pm2 start pm2.config.cjs",
+        "ct": "bun ./scripts/checkTable.js",
+        "syncDb:dev": "bun --env-file=./.env.development ./scripts/syncMysql.js",
+        "syncDb:prod": "bun --env-file=./.env.production ./scripts/syncMysql.js"
     },
     "keywords": [
         "api",
@@ -31,12 +28,9 @@
         "url": "https://github.com/yicode-team/yicode.git"
     },
     "dependencies": {
-        "@yicode/sync-user-database": "^1.1.3",
-        "@yicode/yiapi": "^3.17.7",
-        "lodash-es": "^4.17.21"
+        "funpi": "^7.20.9",
+        "dotenv": "^16.4.7"
     },
     "gitHead": "3badb811062969b5b99b5445e36cc8f99548c978",
-    "devDependencies": {
-        "nodemon": "^3.1.0"
-    }
+    "devDependencies": {}
 }

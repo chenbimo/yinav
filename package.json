@@ -13,9 +13,10 @@
     "description": "随易科技（yicode.tech） - 软件开发生态",
     "homepage": "https://yicode.tech",
     "main": "index.js",
-    "scripts": {
-        "preinstall": "npx only-allow pnpm"
-    },
+    "scripts": {},
+    "workspaces": [
+        "packages/*"
+    ],
     "keywords": [
         "yicode",
         "cli",
@@ -27,15 +28,18 @@
         "nodejs"
     ],
     "author": "chensuiyi <bimostyle@qq.com>",
+    "dependencies": {
+        "@arco-design/web-vue": "^2.57.0",
+        "@iconify/json": "^2.2.325",
+        "axios": "^1.8.4",
+        "date-fns": "^4.1.0",
+        "js-md5": "^0.8.3",
+        "lodash-es": "^4.17.21",
+        "store2": "^2.14.4",
+        "yite-cli": "^4.6.1"
+    },
     "devDependencies": {
-        "lint-staged": "^15.2.2",
-        "prettier": "^3.2.5",
-        "simple-git-hooks": "^2.9.0"
-    },
-    "simple-git-hooks": {
-        "pre-commit": "pnpm lint-staged"
-    },
-    "lint-staged": {
-        "*.{js,css,scss,less,ts,jsx,vue,html,json,md,yaml}": "prettier --write"
+        "lefthook": "^1.11.7",
+        "prettier": "^3.5.3"
     }
 }

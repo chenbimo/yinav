@@ -90,6 +90,7 @@ const $Data = $ref({
 
 // 方法集
 const $Method = {
+    // 初始化数据
     async initData() {
         await $Method.apiSelectAllCategory();
         await $Method.apiSelectData();

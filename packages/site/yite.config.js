@@ -47,10 +47,8 @@ export const yiteConfig = {
                 'vue-i18n',
                 'js-md5',
                 'axios',
-                '@yicode/yidash',
                 'date-fns',
                 'date-fns/locale',
-                'tiny-cookie',
                 '@arco-design/web-vue/es/icon',
                 'store2',
                 '@arco-design/web-vue'

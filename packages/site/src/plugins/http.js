@@ -19,7 +19,7 @@ $Http.interceptors.request.use(
             config.data = {};
         }
 
-        let token = yite.getCookie('token');
+        let token = '';
         if (token) {
             config.headers.authorization = 'Bearer ' + token;
         }
