@@ -161,7 +161,7 @@ const $Method = {
     // 下架首页
     async apiDownHome(item) {
         try {
-            let res = await $Http({
+            const res = await $Http({
                 url: '/app/nav/navigation/home',
                 data: {
                     id: item.id
@@ -177,7 +177,7 @@ const $Method = {
     // 查询所有首页导航
     async apiGetAllHomeNavigation() {
         try {
-            let res = await $Http({
+            const res = await $Http({
                 url: '/app/nav/navigation/selectAllHome',
                 data: {}
             });

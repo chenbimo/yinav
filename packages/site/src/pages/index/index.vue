@@ -113,7 +113,8 @@
 
 <script setup>
 // 外部集
-import { cloneDeep as _cloneDeep, isEmpty as _isEmpty, omit as _omit, keyBy as _keyBy } from 'es-toolkit';
+import { cloneDeep as _cloneDeep, omit as _omit, keyBy as _keyBy } from 'es-toolkit';
+import { isEmpty as _isEmpty } from 'es-toolkit/compat';
 import { format } from 'date-fns';
 
 // 内部集
@@ -397,9 +398,17 @@ const $Method = {
                 $Data.categoryItem = _cloneDeep(item);
             }
         });
-        $Data.categoryDataById = _keyBy(res.data.rows, 'id');
+        $Data.categoryDataById = _keyBy(res.data.rows, (item) => item.id);
         $Data.categoryData = _cloneDeep(res.data.rows);
-        $Data.categoryTree = [{ id: 0, pid: 0, name: '全部', count: resultNavigation.data.rows.length }, ...utilArrayToTree(res.data.rows)];
+        $Data.categoryTree = [
+            {
+                id: 0,
+                pid: 0,
+                name: '全部',
+                count: resultNavigation.data.rows.length
+            },
+            ...utilArrayToTree(res.data.rows)
+        ];
     },
     // 查询导航
     async apiGetNavigation() {

@@ -4,8 +4,6 @@
     </div>
 </template>
 <script setup>
-let { $GlobalData } = useGlobal();
-
 onMounted(() => {});
 </script>
 

@@ -21,7 +21,7 @@ export const useGlobal = defineStore('global', () => {
         // 查询用户详情
         async apiGetUserDetail() {
             try {
-                let res = await $Http({
+                const res = await $Http({
                     url: '/app/user/detail',
                     data: {}
                 });

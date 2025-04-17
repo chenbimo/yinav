@@ -3,7 +3,7 @@ import axios from 'axios';
 
 // 内部集
 
-let $Http = axios.create({
+const $Http = axios.create({
     method: 'POST',
     baseURL: import.meta.env.VITE_HOST,
     timeout: 1000 * 60,

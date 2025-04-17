@@ -1,30 +1,42 @@
-import * as _ from 'lodash-es';
-import md5 from 'blueimp-md5';
-
-// 合并数据
-export function utilMerge(...obj) {
-    return mergeAny(..._.cloneDeep(obj));
-}
-
-export function utilMd5(...options) {
-    return md5(...options);
-}
-
 // 获取资源
 export function utilGetAssets(name) {
     return new URL(`../assets/${name}`, import.meta.url).href;
 }
 
-export function apiParamsSign(params) {
-    let fieldsArray = [];
-    _.forOwn(_.omit(params, ['sign']), (value, key) => {
-        if (value !== undefined && value !== null && String(value).length < 1000) {
-            fieldsArray.push(`${key}=${value}`);
+export const utilArrayToTree = (arrs, id = 'id', pid = 'pid', children = 'children', forceChildren = true) => {
+    // 输入验证
+    if (!Array.isArray(arrs) || arrs.length === 0) {
+        return [];
+    }
+
+    // 使用 Map 存储项目，并创建副本避免修改原始数据
+    const idMap = new Map();
+    arrs.forEach((item) => {
+        // 创建每个项目的副本
+        idMap.set(item[id], { ...item });
+    });
+
+    const treeData = [];
+
+    // 构建树结构
+    idMap.forEach((item) => {
+        const parentId = item[pid];
+        const parent = idMap.get(parentId);
+
+        if (parent) {
+            // 添加到父项的子列表
+            if (!parent[children]) {
+                parent[children] = [];
+            }
+            parent[children].push(item);
+        } else {
+            // 根节点
+            if (forceChildren && !item[children]) {
+                item[children] = [];
+            }
+            treeData.push(item);
         }
     });
 
-    let fieldsSort = fieldsArray.sort().join('&');
-
-    let fieldsMd5 = utilMd5(fieldsSort);
-    return { sign: fieldsMd5, sort: fieldsSort };
-}
+    return treeData;
+};
