@@ -30,16 +30,17 @@
     "author": "chensuiyi <bimostyle@qq.com>",
     "dependencies": {
         "@arco-design/web-vue": "^2.57.0",
-        "@iconify/json": "^2.2.325",
+        "@arco-plugins/vite-vue": "^1.4.5",
+        "@iconify/json": "^2.2.328",
         "axios": "^1.8.4",
         "date-fns": "^4.1.0",
         "js-md5": "^0.8.3",
         "lodash-es": "^4.17.21",
         "store2": "^2.14.4",
-        "yite-cli": "^4.6.1"
+        "yite-cli": "^4.6.3"
     },
     "devDependencies": {
-        "lefthook": "^1.11.7",
+        "lefthook": "^1.11.10",
         "prettier": "^3.5.3"
     }
 }

@@ -28,8 +28,8 @@
         "url": "https://github.com/yicode-team/yicode.git"
     },
     "dependencies": {
-        "funpi": "^7.20.9",
-        "dotenv": "^16.4.7"
+        "funpi": "^7.20.11",
+        "dotenv": "^16.5.0"
     },
     "gitHead": "3badb811062969b5b99b5445e36cc8f99548c978",
     "devDependencies": {}
