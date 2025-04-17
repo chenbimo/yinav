@@ -65,16 +65,22 @@ export const tableData = {
         max: 300,
         default: ''
     },
+    is_dev: {
+        type: 'tinyInt',
+        name: '是否开发',
+        default: 0,
+        enum: [0, 1]
+    },
     is_private: {
         type: 'tinyInt',
         name: '是否私密',
-        max: 1,
-        default: 0
+        default: 0,
+        enum: [0, 1]
     },
     is_home: {
         type: 'tinyInt',
         name: '是否主页显示',
-        max: 1,
-        default: 0
+        default: 0,
+        enum: [0, 1]
     }
 };

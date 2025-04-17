@@ -41,6 +41,7 @@ export default async (fastify) => {
                     link: req.body.link,
                     sort: req.body.sort,
                     is_private: req.body.is_private,
+                    is_dev: req.session.role === 'dev' ? 1 : 0,
                     describe: req.body.describe
                 });
 
