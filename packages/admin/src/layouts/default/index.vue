@@ -1,12 +1,21 @@
 <template>
     <a-layout class="layout-default">
         <a-layout-sider class="layout-sider" :collapsed="$Data.collapsed" :width="240" collapsible hide-trigger>
-            <div class="info-area">
+            <div class="info-area" @click="$Router.push('/')">
                 <div class="logo bg-contain" :style="{ backgroundImage: 'url(' + utilInternalAssets('logo.png') + ')' }"></div>
-                <div class="name">{{ $GlobalData.appConfig.name }}后台</div>
+                <div class="name">{{ $AppConfig.appName }}</div>
             </div>
-            <div class="menu-area"></div>
-            <sideMenu v-if="$Data.isShow.sideMenu === true" :openMenuId="$Data.openMenuId" :selectedItemId="$Data.selectedItemId" :menuObject="$Data.menuObject" :menuTree="$Data.menuTree"></sideMenu>
+            <div class="menu-area">
+                <a-menu v-model:open-keys="$GlobalData.openKeys" v-model:selected-keys="$GlobalData.selectedKeys" :style="{ width: '100%' }" accordion auto-open-selected @menu-item-click="$Method.onMenuItemClick">
+                    <a-sub-menu v-for="menu in $GlobalData.menuTree" :key="menu.id">
+                        <template #title> <icon-apps /> {{ menu.name }} </template>
+                        <a-menu-item v-for="item in menu.children" :key="item.id">
+                            <icon-file />
+                            {{ item.name }}
+                        </a-menu-item>
+                    </a-sub-menu>
+                </a-menu>
+            </div>
         </a-layout-sider>
         <a-layout class="layout-main" style="height: 100%">
             <div class="layout-header">
@@ -48,18 +57,12 @@
 
 <script setup>
 // 外部集
+import { keyBy as _keyBy, cloneDeep as _cloneDeep, sortBy as _sortBy } from 'es-toolkit';
 
 // 内部集
-import sideMenu from './components/sideMenu.vue';
-
-// 选项集
-defineOptions({
-    name: 'default'
-});
 
 // 全局集
 const { $GlobalData, $GlobalComputed, $GlobalMethod } = useGlobal();
-const $Router = useRouter();
 const $Route = useRoute();
 
 // 数据集
@@ -70,8 +73,6 @@ const $Data = $ref({
     collapsed: false,
     menuTree: [],
     menuObject: {},
-    openMenuId: 0,
-    selectedItemId: 0,
     selectedItem: {}
 });
 
@@ -92,21 +93,20 @@ const $Method = {
     },
     // 点击菜单项
     onMenuItemClick(id) {
-        $Data.selectedItemId = id;
-        $Data.selectedItem = $Data.menuObject[id];
-        $Router.push($Data.selectedItem.value);
+        $GlobalMethod.setRoutePath(id);
+        const selectedItem = $GlobalData.menuObject[id];
+        $Router.push($GlobalData.menuObject[id]?.value);
     },
     // 令牌检测
     async apiTokenCheck() {
         try {
             const res = await $Http({
-                url: '/tool/tokenCheck',
+                url: '/funpi/tool/tokenCheck',
                 data: {}
             });
             if (res.data.state === 'no') {
                 $Router.push('/internal/login');
             }
-            console.log('🚀 ~ file: index.vue:105 ~ apiTokenCheck ~ res:', res);
         } catch (err) {
             console.log('🚀 ~ file: index.vue:102 ~ apiTokenCheck ~ err:', err);
         }
@@ -115,24 +115,20 @@ const $Method = {
     async apiGetAdminMenus() {
         try {
             const res = await $Http({
-                url: '/admin/menu',
+                url: '/funpi/admin/getMenus',
                 data: {}
             });
-            $Data.menuObject = _.keyBy(_.cloneDeep(res.data.rows), 'id');
-            $Data.menuTree = tree_array2Tree(_.sortBy(res.data.rows, 'sort'));
-            $Data.menuTree.forEach((menu, index) => {
+
+            $GlobalData.menuObject = _keyBy(_cloneDeep(res.data.rows), (item) => item.id);
+            $GlobalData.menuTree = utilArrayToTree(_sortBy(res.data.rows, (item) => item.sort));
+            $GlobalData.menuTree.forEach((menu, index) => {
                 menu.children?.forEach((item, index2) => {
                     if (item.value === $Route.path) {
-                        $Data.openMenuId = item.pid;
-                        $Data.selectedItemId = item.id;
-                        $Data.selectedItem = $Data.menuObject[item.id];
+                        $GlobalData.openKeys = [menu.id];
+                        $GlobalData.selectedKeys = [item.id];
                     }
                 });
             });
-            $Data.isShow.sideMenu = true;
-            if ($Data.selectedItem.value) {
-                $Router.push($Data.selectedItem.value);
-            }
         } catch (err) {
             console.log('🚀 ~ file: default.vue ~ line 129 ~ apiGetMenus ~ err', err);
         }
@@ -161,6 +157,7 @@ $Method.initData();
             align-items: center;
             padding: 20px 10px;
             background-color: #eef5f8;
+            cursor: pointer;
             .logo {
                 width: 60px;
                 height: 60px;
