@@ -1,3 +1,3 @@
 export const $AppConfig = {
-    name: '易导航'
+    appName: '易导航'
 };
