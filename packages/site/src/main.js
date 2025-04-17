@@ -1,11 +1,12 @@
 import App from '@/App.vue';
+import '@arco-design/web-vue/dist/arco.css';
+import 'virtual:uno.css';
 
-const app = createApp(App);
+const $App = createApp(App);
+const $Pinia = createPinia();
 
-const $Pinia = Pinia.createPinia();
+$App.use($Router);
+$App.use($Pinia);
+$App.use($I18n);
 
-app.use($Router);
-app.use($Pinia);
-app.use($I18n);
-
-app.mount('#app');
+$App.mount('#app');
