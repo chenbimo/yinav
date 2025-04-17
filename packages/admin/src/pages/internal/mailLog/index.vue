@@ -16,7 +16,7 @@
                     <a-table-column title="登录邮箱" data-index="login_email" :width="200"></a-table-column>
                     <a-table-column title="发送者昵称" data-index="from_name" :width="200"></a-table-column>
                     <a-table-column title="发送者邮箱" data-index="from_email" :width="200"></a-table-column>
-                    <a-table-column title="接收者邮箱" data-index="to_email"></a-table-column>
+                    <a-table-column title="接收者邮箱" data-index="to_email" :width="200"></a-table-column>
                     <a-table-column title="邮件类型" data-index="email_type" :width="150">
                         <template #cell="{ record }">
                             <a-tag v-if="record.email_type === 'common'">普通邮件</a-tag>
@@ -24,7 +24,7 @@
                         </template>
                     </a-table-column>
                     <a-table-column title="发送时间" data-index="created_at2" :width="150"></a-table-column>
-                    <a-table-column title="发送内容" data-index="text"></a-table-column>
+                    <a-table-column title="发送内容" data-index="text_content" :min-width="300"></a-table-column>
                 </template>
             </a-table>
         </div>
@@ -41,15 +41,12 @@
 </template>
 
 <script setup>
+// 外部集
+
 // 内部集
 import sendMailDrawer from './components/sendMailDrawer.vue';
 
 // 外部集
-
-// 选项集
-defineOptions({
-    name: 'dict'
-});
 
 // 全局集
 const { $GlobalData, $GlobalComputed, $GlobalMethod } = useGlobal();
@@ -58,10 +55,6 @@ const { $GlobalData, $GlobalComputed, $GlobalMethod } = useGlobal();
 
 // 数据集
 const $Data = $ref({
-    // 页面配置
-    pageConfig: {
-        name: '邮件日志'
-    },
     // 显示和隐藏
     isShow: {
         sendMailDrawer: false
@@ -90,12 +83,6 @@ const $Method = {
             $Data.isShow.sendMailDrawer = true;
             return;
         }
-
-        // 删除数据
-        if ($Data.actionType === 'deleteData') {
-            $Data.isShow.deleteDataDialog = true;
-            return;
-        }
     },
     // 刷新数据
     async fnFreshData() {
@@ -105,13 +92,13 @@ const $Method = {
     async apiSelectData() {
         try {
             const res = await $Http({
-                url: '/mailLog/select',
+                url: '/funpi/admin/mailSelectPage',
                 data: {
                     page: $Data.pagination.page,
                     limit: $GlobalData.pageLimit
                 }
             });
-            $Data.tableData = datetime_relativeTime(res.data.rows);
+            $Data.tableData = utilRelativeTime(res.data.rows);
             $Data.pagination.total = res.data.total;
         } catch (err) {
             console.log('🚀 ~ file: index.vue:86 ~ apiSelectData ~ err:', err);

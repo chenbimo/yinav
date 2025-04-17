@@ -10,9 +10,9 @@
                 </a-space>
             </div>
             <div class="right">
-                <a-input placeholder="请输入搜索关键字" allow-clear></a-input>
+                <a-input v-model="$Data.formData.keyword" placeholder="请输入搜索关键字" allow-clear @clear="$Method.apiSelectData"></a-input>
                 <div class="w-10px"></div>
-                <a-button type="primary">搜索</a-button>
+                <a-button type="primary" @click="$Method.apiSelectData">搜索</a-button>
             </div>
         </div>
         <div class="page-table">
@@ -44,7 +44,7 @@
         </div>
 
         <!-- 编辑数据抽屉 -->
-        <editDataDrawer v-if="$Data.isShow.editDataDrawer" v-model="$Data.isShow.editDataDrawer" :pageConfig="$Data.pageConfig" :actionType="$Data.actionType" :rowData="$Data.rowData" :categoryAll="$Data.categoryAll" :category_code="$Data.formData.category_code" @changeCategory="$Method.changeCategory" @success="$Method.fnFreshData"></editDataDrawer>
+        <editDataDrawer v-if="$Data.isShow.editDataDrawer" v-model="$Data.isShow.editDataDrawer" :actionType="$Data.actionType" :rowData="$Data.rowData" :categoryAll="$Data.categoryAll" :category_code="$Data.formData.category_code" @changeCategory="$Method.changeCategory" @success="$Method.fnFreshData"></editDataDrawer>
     </div>
 </template>
 
@@ -54,11 +54,6 @@
 // 内部集
 import editDataDrawer from './components/editDataDrawer.vue';
 
-// 选项集
-defineOptions({
-    name: 'dict'
-});
-
 // 全局集
 const { $GlobalData, $GlobalComputed, $GlobalMethod } = useGlobal();
 
@@ -66,21 +61,17 @@ const { $GlobalData, $GlobalComputed, $GlobalMethod } = useGlobal();
 
 // 数据集
 const $Data = $ref({
-    // 页面配置
-    pageConfig: {
-        name: '字典'
-    },
     // 显示和隐藏
     isShow: {
-        editDataDrawer: false,
-        deleteDataDialog: false
+        editDataDrawer: false
     },
     actionType: 'insertData',
     categoryAll: [],
     tableData: [],
     rowData: {},
     formData: {
-        category_code: ''
+        category_code: '',
+        keyword: ''
     },
     pagination: {
         page: 1,
@@ -109,8 +100,15 @@ const $Method = {
 
         // 删除数据
         if ($Data.actionType === 'deleteData') {
-            $Data.isShow.deleteDataDialog = true;
-            return;
+            Modal.confirm({
+                title: '提示',
+                content: '请确认是否删除？',
+                modalClass: 'delete-modal-class',
+                alignCenter: true,
+                onOk() {
+                    $Method.apiDeleteData();
+                }
+            });
         }
     },
     changeCategory(category_code) {
@@ -125,7 +123,7 @@ const $Method = {
     async apiSelectCategory() {
         try {
             const res = await $Http({
-                url: '/dictCategory/selectAll',
+                url: '/funpi/dict/categorySelectAll',
                 data: {}
             });
             $Data.categoryAll = res.data.rows.map((item, index) => {
@@ -143,10 +141,11 @@ const $Method = {
     async apiSelectData() {
         try {
             const res = await $Http({
-                url: '/dict/select',
+                url: '/funpi/dict/dictSelectPage',
                 data: {
                     page: $Data.pagination.page,
                     limit: $GlobalData.pageLimit,
+                    keyword: $Data.formData.keyword,
                     category_code: $Data.formData.category_code
                 }
             });
@@ -155,6 +154,25 @@ const $Method = {
         } catch (err) {
             console.log('🚀 ~ file: index.vue:86 ~ apiSelectData ~ err:', err);
             Message.error(err.msg || err);
+        }
+    },
+    // 删除数据
+    async apiDeleteData() {
+        try {
+            const res = await $Http({
+                url: '/funpi/dict/dictDelete',
+                data: {
+                    id: $Data.rowData.id
+                }
+            });
+            await $Method.apiSelectData();
+            Message.success({
+                content: res.msg
+            });
+        } catch (err) {
+            Message.error({
+                content: err.msg || err
+            });
         }
     }
 };

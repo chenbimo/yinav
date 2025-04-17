@@ -15,7 +15,7 @@
                 <template #columns>
                     <a-table-column title="昵称" data-index="nickname"></a-table-column>
                     <a-table-column title="用户名" data-index="username"></a-table-column>
-                    <a-table-column title="角色" data-index="role_codes"></a-table-column>
+                    <a-table-column title="角色" data-index="role"></a-table-column>
                     <a-table-column title="手机" data-index="phone"></a-table-column>
                     <a-table-column title="微信" data-index="wexin"></a-table-column>
                     <a-table-column title="QQ" data-index="qq"></a-table-column>
@@ -43,7 +43,7 @@
         </div>
 
         <!-- 编辑数据抽屉 -->
-        <editDataDrawer v-if="$Data.isShow.editDataDrawer" v-model="$Data.isShow.editDataDrawer" :pageConfig="$Data.pageConfig" :actionType="$Data.actionType" :rowData="$Data.rowData" @success="$Method.fnFreshData"></editDataDrawer>
+        <editDataDrawer v-if="$Data.isShow.editDataDrawer" v-model="$Data.isShow.editDataDrawer" :actionType="$Data.actionType" :rowData="$Data.rowData" @success="$Method.fnFreshData"></editDataDrawer>
     </div>
 </template>
 
@@ -51,27 +51,16 @@
 // 内部集
 import editDataDrawer from './components/editDataDrawer.vue';
 
-// 选项集
-defineOptions({
-    name: 'admin'
-});
-
 // 全局集
 const { $GlobalData, $GlobalComputed, $GlobalMethod } = useGlobal();
 
 // 工具集
-const $Router = useRouter();
 
 // 数据集
 const $Data = $ref({
-    // 页面配置
-    pageConfig: {
-        name: '管理员'
-    },
     // 显示和隐藏
     isShow: {
-        editDataDrawer: false,
-        deleteDataDialog: false
+        editDataDrawer: false
     },
     actionType: 'insertData',
     categoryAll: [],
@@ -101,8 +90,15 @@ const $Method = {
 
         // 删除数据
         if ($Data.actionType === 'deleteData') {
-            $Data.isShow.deleteDataDialog = true;
-            return;
+            Modal.confirm({
+                title: '提示',
+                content: '请确认是否删除？',
+                modalClass: 'delete-modal-class',
+                alignCenter: true,
+                onOk() {
+                    $Method.apiDeleteData();
+                }
+            });
         }
     },
     // 刷新数据
@@ -113,7 +109,7 @@ const $Method = {
     async apiSelectData() {
         try {
             const res = await $Http({
-                url: '/admin/select',
+                url: '/funpi/admin/adminSelectPage',
                 data: {
                     page: $Data.pagination.page,
                     limit: $GlobalData.pageLimit
@@ -122,7 +118,28 @@ const $Method = {
             $Data.tableData = res.data.rows;
             $Data.pagination.total = res.data.total;
         } catch (err) {
-        } finally {
+            Message.error({
+                content: err.msg || err
+            });
+        }
+    },
+    // 删除管理员
+    async apiDeleteData() {
+        try {
+            const res = await $Http({
+                url: '/funpi/admin/adminDelete',
+                data: {
+                    id: $Data.rowData.id
+                }
+            });
+            await $Method.apiSelectData();
+            Message.success({
+                content: res.msg
+            });
+        } catch (err) {
+            Message.error({
+                content: err.msg || err
+            });
         }
     }
 };
