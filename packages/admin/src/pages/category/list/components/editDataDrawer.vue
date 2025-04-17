@@ -24,6 +24,7 @@
 </template>
 <script setup>
 // 外部集
+import { merge as _merge } from 'es-toolkit';
 
 // 内部集
 
@@ -75,7 +76,7 @@ const $Method = {
     async initData() {
         $Data.isShow.editDataDrawer = $Prop.modelValue;
         if ($Prop.actionType === 'updateData') {
-            $Data.formData = _.merge($Data.formData, $Prop.rowData);
+            $Data.formData = _merge($Data.formData, $Prop.rowData);
         }
         if ($Prop.actionType === 'insertData') {
             $Data.formData.pid = $Prop.rowData.id;
@@ -93,8 +94,8 @@ const $Method = {
     async apiEditData() {
         try {
             const url = {
-                insertData: '/category/insert',
-                updateData: '/category/update'
+                insertData: '/app/category/insert',
+                updateData: '/app/category/update'
             }[$Prop.actionType];
             const res = await $Http({
                 url: url,

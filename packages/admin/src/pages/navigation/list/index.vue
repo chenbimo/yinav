@@ -54,6 +54,7 @@
 </template>
 
 <script setup>
+import { keyBy as _keyBy } from 'es-toolkit';
 // 内部集
 import editDataDrawer from './components/editDataDrawer.vue';
 
@@ -135,10 +136,10 @@ const $Method = {
     async apiSelectAllCategory() {
         try {
             const res = await $Http({
-                url: '/category/selectAll',
+                url: '/app/category/selectAll',
                 data: {}
             });
-            $Data.categoryById = _.keyBy(res.data.rows, 'id');
+            $Data.categoryById = _keyBy(res.data.rows, (item) => item.id);
         } catch (err) {
             Message.error({
                 content: err.msg || err
@@ -149,14 +150,14 @@ const $Method = {
     async apiSelectData() {
         try {
             const res = await $Http({
-                url: '/navigation/select',
+                url: '/app/navigation/select',
                 data: {
                     page: $Data.pagination.page,
                     limit: $GlobalData.pageLimit
                 }
             });
 
-            $Data.tableData = datetime_relativeTime(res.data.rows).map((item) => {
+            $Data.tableData = utilRelativeTime(res.data.rows).map((item) => {
                 item.category_name = $Data.categoryById[item.pid]?.name || '';
                 item.category_names = (
                     item.pids?.split(',')?.map((pid) => {
@@ -181,7 +182,7 @@ const $Method = {
     async apiDeleteData() {
         try {
             const res = await $Http({
-                url: '/navigation/delete',
+                url: '/app/navigation/delete',
                 data: {
                     id: $Data.rowData.id
                 }

@@ -29,6 +29,7 @@
 </template>
 <script setup>
 // 外部集
+import { merge as _merge } from 'es-toolkit';
 
 // 内部集
 
@@ -88,7 +89,7 @@ const $Method = {
     async initData() {
         $Data.isShow.editDataDrawer = $Prop.modelValue;
         $Data.formData.pid = $Prop.categoryItem.id || '';
-        $Data.formData = _.merge($Data.formData, $Prop.rowData);
+        $Data.formData = _merge($Data.formData, $Prop.rowData);
         $Method.apiSelectAllCategory();
     },
     // 关闭抽屉事件
@@ -102,10 +103,10 @@ const $Method = {
     async apiSelectAllCategory() {
         try {
             const res = await $Http({
-                url: '/category/selectAll',
+                url: '/app/category/selectAll',
                 data: {}
             });
-            $Data.categoryTree = tree_array2Tree(res.data.rows);
+            $Data.categoryTree = utilArrayToTree(res.data.rows);
         } catch (err) {
             Message.warning({
                 content: err.msg || err
@@ -122,8 +123,8 @@ const $Method = {
                 return;
             }
             const url = {
-                insertData: '/navigation/insert',
-                updateData: '/navigation/update'
+                insertData: '/app/navigation/insert',
+                updateData: '/app/navigation/update'
             }[$Prop.actionType];
             if (!url) {
                 Message.warning({

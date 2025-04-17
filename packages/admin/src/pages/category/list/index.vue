@@ -41,6 +41,7 @@
 </template>
 
 <script setup>
+import { sortBy as _sortBy } from 'es-toolkit';
 // 内部集
 import editDataDrawer from './components/editDataDrawer.vue';
 
@@ -114,13 +115,19 @@ const $Method = {
     async apiSelectData() {
         try {
             const res = await $Http({
-                url: '/category/selectAll',
+                url: '/app/category/selectAll',
                 data: {
                     page: $Data.pagination.page,
                     limit: $GlobalData.pageLimit
                 }
             });
-            $Data.tableData = tree_array2Tree(_.sortBy(datetime_relativeTime(res.data.rows), 'sort'), 'id', 'pid', 'children', false);
+            $Data.tableData = utilArrayToTree(
+                _sortBy(utilRelativeTime(res.data.rows), (item) => item.sort),
+                'id',
+                'pid',
+                'children',
+                false
+            );
         } catch (err) {
             console.log('🚀 ~ file: index.vue:86 ~ apiSelectData ~ err:', err);
             Message.error(err.msg || err);
@@ -130,7 +137,7 @@ const $Method = {
     async apiDeleteData() {
         try {
             const res = await $Http({
-                url: '/category/delete',
+                url: '/app/category/delete',
                 data: {
                     id: $Data.rowData.id
                 }
