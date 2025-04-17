@@ -2,8 +2,6 @@
 
 ## 仓库地址
 
-[gitee - https://gitee.com/chenbimo/yinav](https://gitee.com/chenbimo/yinav)
-
 [github - https://github.com/chenbimo/yinav](https://github.com/chenbimo/yinav)
 
 ## 如何使用？
