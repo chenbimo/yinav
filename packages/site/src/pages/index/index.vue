@@ -113,6 +113,7 @@
 
 <script setup>
 // 外部集
+import { cloneDeep as _cloneDeep, isEmpty as _isEmpty, omit as _omit, keyBy as _keyBy } from 'es-toolkit';
 import { format } from 'date-fns';
 
 // 内部集
@@ -243,14 +244,14 @@ const $Method = {
         //     }
         // }
 
-        $Data.categoryItem = _.omit(data.node, ['children']);
+        $Data.categoryItem = _omit(data.node, ['children']);
         await $Method.apiGetNavigation();
     },
     // 首页导航
     async apiHomeNavigation() {
         try {
             const res = await $Http({
-                url: '/navigation/home',
+                url: '/app/navigation/home',
                 data: {
                     id: $Data.rowData.id
                 }
@@ -268,7 +269,7 @@ const $Method = {
     async apiDeleteCategory() {
         try {
             const res = await $Http({
-                url: '/category/delete',
+                url: '/app/category/delete',
                 data: {
                     id: $Data.rowCategory.id
                 }
@@ -287,7 +288,7 @@ const $Method = {
     async apiDeleteData() {
         try {
             const res = await $Http({
-                url: '/navigation/delete',
+                url: '/app/navigation/delete',
                 data: {
                     id: $Data.rowData.id
                 }
@@ -306,7 +307,7 @@ const $Method = {
     async apiGetCategoryTotal() {
         try {
             const res = await $Http({
-                url: '/category/count',
+                url: '/app/category/count',
                 data: {
                     type: $Data.dataType
                 }
@@ -321,7 +322,7 @@ const $Method = {
     async apiGetNavigationTotal() {
         try {
             const res = await $Http({
-                url: '/navigation/count',
+                url: '/app/navigation/count',
                 data: {
                     type: $Data.dataType
                 }
@@ -339,7 +340,7 @@ const $Method = {
         };
 
         const resultNavigation = await $Http({
-            url: '/navigation/selectAll',
+            url: '/app/navigation/selectAll',
             data: {
                 type: $Data.dataType,
                 mode: $Data.dataMode,
@@ -382,7 +383,7 @@ const $Method = {
 
         // 处理分类
         const res = await $Http({
-            url: '/category/selectAll',
+            url: '/app/category/selectAll',
             data: {
                 type: $Data.dataType,
                 level: 'mini'
@@ -392,19 +393,19 @@ const $Method = {
             const count = navigationByPid[item.id] || 0;
             item.count = count;
             item.label = `${item.name} (${count})`;
-            if (index === 0 && _.isEmpty($Data.categoryItem) === true) {
-                $Data.categoryItem = _.cloneDeep(item);
+            if (index === 0 && _isEmpty($Data.categoryItem) === true) {
+                $Data.categoryItem = _cloneDeep(item);
             }
         });
-        $Data.categoryDataById = _.keyBy(res.data.rows, 'id');
-        $Data.categoryData = _.cloneDeep(res.data.rows);
-        $Data.categoryTree = [{ id: 0, pid: 0, name: '全部', count: resultNavigation.data.rows.length }, ...tree_array2Tree(res.data.rows)];
+        $Data.categoryDataById = _keyBy(res.data.rows, 'id');
+        $Data.categoryData = _cloneDeep(res.data.rows);
+        $Data.categoryTree = [{ id: 0, pid: 0, name: '全部', count: resultNavigation.data.rows.length }, ...utilArrayToTree(res.data.rows)];
     },
     // 查询导航
     async apiGetNavigation() {
         try {
             const res = await $Http({
-                url: '/navigation/list',
+                url: '/app/navigation/list',
                 data: {
                     type: $Data.dataType,
                     mode: $Data.dataMode,

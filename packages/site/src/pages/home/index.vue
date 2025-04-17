@@ -65,6 +65,7 @@
 
 <script setup>
 // 外部集
+import { keyBy as _keyBy, cloneDeep as _cloneDeep } from 'es-toolkit';
 
 // 外部集
 
@@ -161,7 +162,7 @@ const $Method = {
     async apiDownHome(item) {
         try {
             let res = await $Http({
-                url: '/nav/navigation/home',
+                url: '/app/nav/navigation/home',
                 data: {
                     id: item.id
                 }
@@ -177,14 +178,14 @@ const $Method = {
     async apiGetAllHomeNavigation() {
         try {
             let res = await $Http({
-                url: '/nav/navigation/selectAllHome',
+                url: '/app/nav/navigation/selectAllHome',
                 data: {}
             });
 
             $Data.categoryRows = res.data.categoryRows;
-            $Data.navigationRows = _.cloneDeep(res.data.rows);
-            $Data.categoryTree = tree_array2Tree(res.data.categoryRows);
-            $Data.categoryObject = _.keyBy(res.data.categoryRows, 'id');
+            $Data.navigationRows = _cloneDeep(res.data.rows);
+            $Data.categoryTree = utilArrayToTree(res.data.categoryRows);
+            $Data.categoryObject = _keyBy(res.data.categoryRows, (item) => item.id);
             $Data.category1Item = $Data.categoryTree?.[0] || {};
             $Data.category2Item = $Data.category1Item?.children?.[0] || {};
             $Data.category3Item = $Data.category2Item?.children?.[0] || {};

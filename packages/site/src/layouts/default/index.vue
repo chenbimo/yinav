@@ -11,15 +11,15 @@
 </template>
 
 <script setup>
-let $Router = useRouter();
-let $Route = useRoute();
+const $Router = useRouter();
+const $Route = useRoute();
 
-let $Data = $ref({
+const $Data = $ref({
     collapsed: false,
     menuTree: []
 });
 
-let $RefLogin = $ref(null);
+const $RefLogin = $ref(null);
 </script>
 
 <style lang="scss" scoped>
@@ -33,9 +33,9 @@ let $RefLogin = $ref(null);
     .layout-header {
         position: absolute;
         top: 0;
-        left: $layout-menu-width;
+        left: 240px;
         right: 0;
-        height: $layout-header-height;
+        height: 54px;
         border-bottom: 1px solid #ddd;
         background-color: #fff;
         display: flex;
@@ -54,12 +54,12 @@ let $RefLogin = $ref(null);
     }
     .layout-main {
         position: absolute;
-        top: $layout-header-height;
+        top: 54px;
         right: 0;
         bottom: 0;
-        left: $layout-menu-width;
+        left: 240px;
         z-index: 1;
-        min-height: calc(100vh - $layout-header-height);
+        min-height: calc(100vh - 54px);
     }
 }
 </style>
