@@ -1,6 +1,11 @@
-export let useGlobal = Pinia.defineStore('global', () => {
+export const useGlobal = defineStore('global', () => {
     // 全局数据
-    let $GlobalData = $ref({
+    const $GlobalData = $ref({
+        // 项目配置
+        uploadUrl: import.meta.env.VITE_HOST + '/upload/local',
+        uploadHeaders: {
+            authorization: 'Bearer ' + $Storage.local.get('token') || ''
+        },
         // 用户令牌
         token: '',
         // 用户数据
@@ -9,15 +14,15 @@ export let useGlobal = Pinia.defineStore('global', () => {
     });
 
     // 全局计算数据
-    let $GlobalComputed = {};
+    const $GlobalComputed = {};
 
     // 全局方法
-    let $GlobalMethod = {
+    const $GlobalMethod = {
         // 查询用户详情
         async apiGetUserDetail() {
             try {
                 let res = await $Http({
-                    url: '/user/detail',
+                    url: '/app/user/detail',
                     data: {}
                 });
                 $GlobalData.userData = res.data;
