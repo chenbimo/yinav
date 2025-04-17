@@ -27,6 +27,7 @@
 html,
 body {
     font-size: 14px;
+    font-family: -apple-system, system-ui, 'Segoe UI', 'Roboto', 'Ubuntu', 'Cantarell', 'Noto Sans', sans-serif, 'BlinkMacSystemFont', 'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', Arial !important;
 }
 
 a {
@@ -43,15 +44,22 @@ a {
     left: 0;
 }
 
-.link {
-    color: #2588ff;
+.my-modal-class {
+    .bodyer {
+        max-height: 70vh;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
 }
 
-.wrapper {
-    max-width: $layout-wrapper-width;
-    margin: 0 auto;
-    height: 100%;
-    padding: 0 15px;
+.menu-area {
+    .arco-menu .arco-icon {
+        margin-right: 0 !important;
+    }
+}
+
+.link {
+    color: #2588ff;
 }
 
 .bg-contain,
@@ -64,6 +72,30 @@ a {
 }
 .bg-cover {
     background-size: cover;
+}
+
+.bodyer-modal {
+    max-height: 60vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.common-badge {
+    display: flex;
+    height: 24px;
+    line-height: 24px;
+    background-color: #eee;
+    border-radius: 2px;
+    overflow: hidden;
+    font-size: 14px;
+    .label {
+        padding: 0 8px;
+        background-color: #165dff;
+        color: #fff;
+    }
+    .value {
+        padding: 0 8px;
+    }
 }
 
 .page-full {
@@ -80,6 +112,10 @@ a {
         height: 34px;
         display: flex;
         justify-content: space-between;
+        .left {
+            display: flex;
+            align-items: center;
+        }
         .right {
             display: flex;
             align-items: center;

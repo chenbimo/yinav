@@ -1,4 +1,4 @@
-@import './internal.scss';
+@use './internal.scss';
 
 .href-link {
     color: rgb(var(--link-6));
