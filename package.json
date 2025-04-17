@@ -34,8 +34,8 @@
         "@iconify/json": "^2.2.328",
         "axios": "^1.8.4",
         "date-fns": "^4.1.0",
+        "es-toolkit": "^1.35.0",
         "js-md5": "^0.8.3",
-        "lodash-es": "^4.17.21",
         "store2": "^2.14.4",
         "yite-cli": "^4.6.3"
     },
