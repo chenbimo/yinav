@@ -48,6 +48,7 @@ export const yiteConfig = {
                 'js-md5',
                 'axios',
                 'date-fns',
+                'es-toolkit',
                 'date-fns/locale',
                 '@arco-design/web-vue/es/icon',
                 'store2',

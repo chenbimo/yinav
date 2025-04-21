@@ -61,6 +61,15 @@ export const utilArrayToTree = (arrs, id = 'id', pid = 'pid', children = 'childr
     return treeData;
 };
 
+/**
+ * 转换相对时间
+ * @alias yd_datetime_relativeTime
+ * @category datetime
+ * @param {Array | object} data 数组或对象
+ * @returns {object} 返回转换后的相对时间
+ * @author 陈随易 <https://chensuiyi.me>
+ * @example yd_datetime_relativeTime([])
+ */
 export const utilRelativeTime = (data) => {
     // 转换相对时间
     const _convertTime = (obj) => {

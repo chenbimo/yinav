@@ -1,11 +1,14 @@
 <template>
     <div class="page-index">
-        <!-- <div class="page-header">
+        <div class="page-header">
             <div class="left">
-
+                <img class="logo" :src="utilGetAssets('logo.png')" />
+                <img class="logo-text" :src="utilGetAssets('nav-logo-text.png')" />
             </div>
-            <div class="right"></div>
-        </div> -->
+            <div class="right">
+                <a-button type="primary" status="success" size="small" shape="round" style="font-size: 12px">登录 / 注册</a-button>
+            </div>
+        </div>
         <div class="page-menu">
             <div class="add-category">
                 <a-button v-if="$GlobalData.token && $Data.dataType === 'mine'" type="primary" size="mini" long @click="$Method.onExecCatetoryAction('insertCategory', { id: 0 })">添加分类</a-button>
@@ -473,10 +476,32 @@ $Method.initData();
             left: 8px;
         }
     }
-
+    .page-header {
+        position: absolute;
+        left: 0;
+        right: 0;
+        height: $page-header-height;
+        border-bottom: 1px solid #eee;
+        padding: 0 10px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        .left {
+            display: flex;
+            align-items: center;
+            .logo {
+                width: 40px;
+                height: 40px;
+                margin-right: 10px;
+            }
+            .logo-text {
+                height: 34px;
+            }
+        }
+    }
     .page-menu {
         position: absolute;
-        top: 0;
+        top: $page-header-height;
         left: 0;
         bottom: 0;
         width: $page-menu-width;
@@ -522,7 +547,7 @@ $Method.initData();
     }
     .page-bodyer {
         position: absolute;
-        top: 0;
+        top: $page-header-height;
         left: $page-menu-width;
         bottom: 0;
         right: 0;
