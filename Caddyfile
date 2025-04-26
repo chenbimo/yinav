@@ -1,0 +1,17 @@
+https://nav.yicode.tech {
+	root * /wwwroot/yicode.tech/site
+	encode gzip
+	file_server
+}
+https://nav-admin.yicode.tech {
+	root * /wwwroot/yicode.tech/admin
+	encode gzip
+	file_server
+}
+https://nav-api.yicode.tech {
+	reverse_proxy /* http://127.0.0.1:3020 {
+		header_up Host {http.reverse_proxy.upstream.hostport}
+		header_down Access-Control-Allow-Headers *
+		header_down Access-Control-Allow-Origin *
+	}
+}
